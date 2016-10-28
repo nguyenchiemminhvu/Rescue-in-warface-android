@@ -12,6 +12,7 @@
 #include "Enemy\Tower.h"
 
 #include "Player\Gascan.h"
+#include "Player\Player.h"
 
 
 cocos2d::Scene * GameScene::createScene()
@@ -206,7 +207,7 @@ void GameScene::initHUD()
 
 void GameScene::initPlayer()
 {
-
+	Player *player = new Player(this);
 }
 
 

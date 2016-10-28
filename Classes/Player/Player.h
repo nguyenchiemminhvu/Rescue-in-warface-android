@@ -5,7 +5,7 @@
 
 #include "cocos2d.h"
 
-#define __PLAYER_TOTAL_FRAME__ 2
+#define __PLAYER_ANIMATION_TOTAL_FRAME__ 2
 
 class Player : public cocos2d::Node
 {
@@ -53,3 +53,31 @@ private:
 };
 
 #endif //__PLAYER_H__
+
+#ifndef __PLAYER_BULLET_H__
+#define __PLAYER_BULLET_H__
+
+#define __PLAYER_BULLET_VELOCITY__ 1000
+
+class PlayerBullet : public cocos2d::Node {
+public:
+
+	static PlayerBullet* createBullet(cocos2d::Layer *gameScene, cocos2d::Vec2 pos);
+
+	PlayerBullet(cocos2d::Layer *gameScene, cocos2d::Vec2 pos);
+	virtual ~PlayerBullet();
+
+private:
+
+	cocos2d::Layer *gameScene;
+
+	cocos2d::Vec2 origin;
+	cocos2d::Size visibleSize;
+
+	cocos2d::Sprite *bulletSprite;
+	cocos2d::Vec2 startPos;
+
+	void initPlayerBullet();
+};
+
+#endif // !__PLAYER_BULLET_H__
