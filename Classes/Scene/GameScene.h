@@ -4,6 +4,7 @@
 #pragma once
 
 #include "cocos2d.h"
+#include "ui\CocosGUI.h"
 
 #include "HUD\HUD.h"
 #include "Player\Player.h"

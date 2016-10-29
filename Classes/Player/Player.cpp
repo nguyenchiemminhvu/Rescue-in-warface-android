@@ -4,17 +4,6 @@
 #include <string>
 
 
-Player* Player::instance = nullptr;
-
-Player * Player::getInstance(cocos2d::Layer *gameScene)
-{
-	if (instance == nullptr) {
-		instance = new Player(gameScene);
-	}
-	return instance;
-}
-
-
 Player::Player(cocos2d::Layer *gameScene)
 {
 	this->gameScene = gameScene;

@@ -14,8 +14,6 @@ class Player : public cocos2d::Node
 {
 public:
 
-	static Player* getInstance(cocos2d::Layer *gameScene);
-
 	enum PlayerProperties
 	{
 		FLYING_SPEED = 100
@@ -66,8 +64,6 @@ private:
 	void initPlayerAnimation();
 
 	void updatePlayerPosition(float dt);
-
-	static Player *instance;
 };
 
 #endif //__PLAYER_H__

@@ -17,7 +17,11 @@
 cocos2d::Scene * GameScene::createScene()
 {
 	auto scene = cocos2d::Scene::createWithPhysics();
-	//scene->getPhysicsWorld()->setDebugDrawMask(cocos2d::PhysicsWorld::DEBUGDRAW_ALL);
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
+	scene->getPhysicsWorld()->setDebugDrawMask(cocos2d::PhysicsWorld::DEBUGDRAW_ALL);
+#endif
+	
 	auto layerGame = GameScene::create();
 	layerGame->setPhysicsWorld(scene->getPhysicsWorld());
 	scene->addChild(layerGame);
@@ -276,11 +280,14 @@ void GameScene::initMultiTouchEventListener()
 	touchesListener->onTouchesBegan = 
 	[&](const std::vector<cocos2d::Touch *> touches, cocos2d::Event *event) {
 		
-		//Check if player touch on button fire
 		for (auto touch : touches) {
+			//Check if player touch on button fire
 			Node *node = this->getNodeUnderTouch(touch, bFire);
-			if (node && pPlayer->stillUnderControl())
+			if (node && pPlayer->stillUnderControl()) {
+				bFire->setScale(1.1F);
+				player->createBullet(0);
 				this->schedule(schedule_selector(GameScene::playerShooting), __PLAYER_RELOAD_DURATION__);
+			}
 		}
 	};
 	
@@ -290,8 +297,10 @@ void GameScene::initMultiTouchEventListener()
 		//Check if player untouched button fire
 		for (auto touch : touches) {
 			Node *node = this->getNodeUnderTouch(touch, bFire);
-			if (node)
+			if (node) {
+				bFire->setScale(1.0F);
 				this->unschedule(schedule_selector(GameScene::playerShooting));
+			}
 		}
 	};
 
