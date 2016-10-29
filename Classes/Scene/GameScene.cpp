@@ -12,13 +12,12 @@
 #include "Enemy\Tower.h"
 
 #include "Player\Gascan.h"
-#include "Player\Player.h"
 
 
 cocos2d::Scene * GameScene::createScene()
 {
 	auto scene = cocos2d::Scene::createWithPhysics();
-	scene->getPhysicsWorld()->setDebugDrawMask(cocos2d::PhysicsWorld::DEBUGDRAW_ALL);
+	//scene->getPhysicsWorld()->setDebugDrawMask(cocos2d::PhysicsWorld::DEBUGDRAW_ALL);
 	auto layerGame = GameScene::create();
 	layerGame->setPhysicsWorld(scene->getPhysicsWorld());
 	scene->addChild(layerGame);
@@ -48,6 +47,7 @@ bool GameScene::init()
 
 	initPlayer();
 	initHUD();
+	initButtons();
 
 	initContactListener();
 	initKeyboardEventListener();
@@ -207,7 +207,32 @@ void GameScene::initHUD()
 
 void GameScene::initPlayer()
 {
-	Player *player = new Player(this);
+	player = new Player(this);
+}
+
+
+void GameScene::initButtons()
+{
+	///////////////////////////////////////////
+	// button fire
+	buttonFire = cocos2d::Sprite::create("images/buttons/button_fire.png");
+	buttonFire->setPosition(
+		cocos2d::Vec2(
+			origin.x + visibleSize.width - buttonFire->getContentSize().width,
+			origin.y + buttonFire->getContentSize().height
+		)
+	);
+
+	//////////////////////////////////////////
+	// add button fire physics body
+	auto buttonFireBody = cocos2d::PhysicsBody::createCircle(buttonFire->getContentSize().width / 2);
+	buttonFireBody->setDynamic(false);
+	buttonFireBody->setGravityEnable(false);
+	buttonFireBody->setContactTestBitmask(false);
+	buttonFireBody->setCollisionBitmask(0);
+	buttonFire->setPhysicsBody(buttonFireBody);
+
+	this->addChild(buttonFire);
 }
 
 
@@ -245,16 +270,29 @@ void GameScene::initMultiTouchEventListener()
 	touchesListener = cocos2d::EventListenerTouchAllAtOnce::create();
 	
 	cocos2d::Sprite *&jStick = joyStick;
-	cocos2d::Sprite *&bShoot = buttonShoot;
+	cocos2d::Sprite *&bFire = buttonFire;
+	Player *&pPlayer = player;
 
 	touchesListener->onTouchesBegan = 
-	[=](const std::vector<cocos2d::Touch *> touches, cocos2d::Event *event) {
+	[&](const std::vector<cocos2d::Touch *> touches, cocos2d::Event *event) {
 		
+		//Check if player touch on button fire
+		for (auto touch : touches) {
+			Node *node = this->getNodeUnderTouch(touch, bFire);
+			if (node && pPlayer->stillUnderControl())
+				this->schedule(schedule_selector(GameScene::playerShooting), __PLAYER_RELOAD_DURATION__);
+		}
 	};
 	
 	touchesListener->onTouchesEnded = 
-	[=](const std::vector<cocos2d::Touch *> touches, cocos2d::Event *event) {
-			
+	[&](const std::vector<cocos2d::Touch *> touches, cocos2d::Event *event) {
+		
+		//Check if player untouched button fire
+		for (auto touch : touches) {
+			Node *node = this->getNodeUnderTouch(touch, bFire);
+			if (node)
+				this->unschedule(schedule_selector(GameScene::playerShooting));
+		}
 	};
 
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchesListener, this);
@@ -307,7 +345,8 @@ void GameScene::updatePlayerFuel()
 {
 	if (countedFrames % 200 == 0)	{
 		
-		
+		player->decreaseFuel();
+		hud->updatePlayerFuel(player->getCurrentFuel());
 	}
 }
 
@@ -467,7 +506,7 @@ void GameScene::spawnGascan(float t)
 
 void GameScene::playerShooting(float t)
 {
-	cocos2d::log("shooting ...");
+	player->createBullet(t);
 }
 
 
@@ -538,4 +577,25 @@ void GameScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode key, cocos2d::Event
 void GameScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode key, cocos2d::Event * e)
 {
 
+}
+
+
+cocos2d::Node * GameScene::getNodeUnderTouch(cocos2d::Touch * touch, cocos2d::Node *target)
+{
+	cocos2d::Node *node = nullptr;
+
+	auto location = touch->getLocation();
+
+	//retrive all physics shape under touch location by running scene
+	auto runningScene = cocos2d::Director::getInstance()->getRunningScene();
+	auto shapes = runningScene->getPhysicsWorld()->getShapes(location);
+
+	for (auto shape : shapes) {
+		if (shape->getBody()->getNode() == target) {
+			node = shape->getBody()->getNode();
+			break;
+		}
+	}
+
+	return node;
 }

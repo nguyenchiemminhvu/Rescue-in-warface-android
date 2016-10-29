@@ -4,6 +4,16 @@
 #include <string>
 
 
+Player* Player::instance = nullptr;
+
+Player * Player::getInstance(cocos2d::Layer *gameScene)
+{
+	if (instance == nullptr) {
+		instance = new Player(gameScene);
+	}
+	return instance;
+}
+
 
 Player::Player(cocos2d::Layer *gameScene)
 {
@@ -16,6 +26,8 @@ Player::Player(cocos2d::Layer *gameScene)
 	this->initPlayerAnimation();
 
 	movement = 0;
+	fuel = PLAYER_MAX_FUEL;
+	score = 0;
 	isUnderControl = true;
 
 	this->scheduleUpdate();
@@ -39,9 +51,42 @@ void Player::resetPlayerMovement()
 }
 
 
+void Player::decreaseFuel()
+{
+	if (fuel > 0)
+		fuel--;
+	else
+		lostControl();
+}
+
+
+int Player::getCurrentFuel()
+{
+	return this->fuel;
+}
+
+
+void Player::increaseScore(int amount)
+{
+	score += amount;
+}
+
+
+unsigned long long Player::getScore()
+{
+	return this->score;
+}
+
+
 void Player::lostControl()
 {
 	isUnderControl = false;
+}
+
+
+bool Player::stillUnderControl()
+{
+	return isUnderControl;
 }
 
 
@@ -49,8 +94,21 @@ cocos2d::Vec2 Player::getPlayerGunPosition()
 {
 	return cocos2d::Vec2(
 		playerSprite->getPositionX() + playerSprite->getContentSize().width / 2 - 20, 
-		playerSprite->getPositionY() + 10
+		playerSprite->getPositionY() - 10
 	);
+}
+
+
+void Player::scheduleShooting()
+{
+	if (isUnderControl)
+		this->schedule(schedule_selector(Player::createBullet), __PLAYER_RELOAD_DURATION__);
+}
+
+
+void Player::unscheduleShooting()
+{
+	this->unschedule(schedule_selector(Player::createBullet));
 }
 
 
@@ -106,6 +164,12 @@ void Player::updatePlayerPosition(float dt)
 
 }
 
+
+void Player::createBullet(float t)
+{
+	PlayerBullet *bullet = PlayerBullet::createBullet(gameScene, getPlayerGunPosition());
+}
+
 /*============================================================*/
 
 PlayerBullet * PlayerBullet::createBullet(cocos2d::Layer * gameScene, cocos2d::Vec2 pos)
@@ -117,7 +181,6 @@ PlayerBullet * PlayerBullet::createBullet(cocos2d::Layer * gameScene, cocos2d::V
 PlayerBullet::PlayerBullet(cocos2d::Layer * gameScene, cocos2d::Vec2 pos)
 {
 	this->gameScene = gameScene;
-	this->autorelease();
 	startPos = pos;
 
 	origin = cocos2d::Director::getInstance()->getVisibleOrigin();
@@ -138,16 +201,12 @@ void PlayerBullet::initPlayerBullet()
 	////////////////////////////////////////////
 	// load player bullet sprite
 	bulletSprite = cocos2d::Sprite::create("images/player/player_bullet.png");
-	bulletSprite->setPosition(
-		cocos2d::Vec2(
-			
-		)
-	);
+	bulletSprite->setPosition(startPos);
 
 	////////////////////////////////////////////
 	// add bullet physics body
 	auto bulletBody = cocos2d::PhysicsBody::createBox(bulletSprite->getContentSize());
-	bulletBody->setDynamic(true);
+	bulletBody->setDynamic(false);
 	bulletBody->setContactTestBitmask(true);
 	bulletBody->setCollisionBitmask((int)CollisionBitmask::PLAYER_BULLET_BITMASK);
 	bulletSprite->setPhysicsBody(bulletBody);
@@ -159,8 +218,8 @@ void PlayerBullet::initPlayerBullet()
 		cocos2d::CallFunc::create(bulletSprite, callfunc_selector(cocos2d::Sprite::removeFromParent)),
 		NULL
 	);
-	bulletSprite->runAction(sequence);
 
 	gameScene->addChild(bulletSprite);
+	bulletSprite->runAction(sequence);
 }
 

@@ -6,10 +6,15 @@
 #include "cocos2d.h"
 
 #define __PLAYER_ANIMATION_TOTAL_FRAME__ 2
+#define __PLAYER_RELOAD_DURATION__ 0.2F
+
+class PlayerBullet;
 
 class Player : public cocos2d::Node
 {
 public:
+
+	static Player* getInstance(cocos2d::Layer *gameScene);
 
 	enum PlayerProperties
 	{
@@ -30,8 +35,17 @@ public:
 	virtual void update(float dt);
 
 	void resetPlayerMovement();
+	void decreaseFuel();
+	int getCurrentFuel();
+	void increaseScore(int amount);
+	unsigned long long getScore();
 	void lostControl();
+	bool stillUnderControl();
 	cocos2d::Vec2 getPlayerGunPosition();
+
+	void scheduleShooting();
+	void unscheduleShooting();
+	void createBullet(float t);
 
 private:
 
@@ -44,12 +58,16 @@ private:
 
 	//Player properties
 	int movement;
+	int fuel;
+	unsigned long long score;
 	bool isUnderControl;
 
 	void initPlayerSprite();
 	void initPlayerAnimation();
 
 	void updatePlayerPosition(float dt);
+
+	static Player *instance;
 };
 
 #endif //__PLAYER_H__

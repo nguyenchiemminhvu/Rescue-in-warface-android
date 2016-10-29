@@ -6,7 +6,7 @@
 #include "cocos2d.h"
 
 #include "HUD\HUD.h"
-
+#include "Player\Player.h"
 #include "Boss\MiniBoss.h"
 #include "Boss\MotherFucker.h"
 
@@ -22,6 +22,8 @@ public:
 
 	virtual void update(float dt);
 
+	cocos2d::Node* getNodeUnderTouch(cocos2d::Touch *touch, cocos2d::Node *target);
+
 	CREATE_FUNC(GameScene);
 
 private:
@@ -36,8 +38,10 @@ private:
 	cocos2d::Sprite *platform1;
 	cocos2d::Sprite *platform2;
 
+	Player *player;
+
 	cocos2d::Sprite *joyStick;
-	cocos2d::Sprite *buttonShoot;
+	cocos2d::Sprite *buttonFire;
 
 	uint64_t countedFrames;
 	uint32_t remainingDistance;
@@ -66,6 +70,7 @@ private:
 
 	void initHUD();
 	void initPlayer();
+	void initButtons();
 
 	void initMiniBoss();
 	void initMotherFucker();
@@ -126,8 +131,6 @@ private:
 
 	void onKeyPressed(cocos2d::EventKeyboard::KeyCode key, cocos2d::Event *e);
 	void onKeyReleased(cocos2d::EventKeyboard::KeyCode key, cocos2d::Event *e);
-
-
 };
 
 #endif //__GAME_SCENE_H__
