@@ -41,6 +41,8 @@ private:
 
 	Player *player;
 
+	cocos2d::Vec2 movementVector;
+	cocos2d::Sprite *joyStickOrigin;
 	cocos2d::Sprite *joyStick;
 	cocos2d::Sprite *buttonFire;
 

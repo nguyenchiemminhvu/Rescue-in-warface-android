@@ -218,7 +218,7 @@ void GameScene::initPlayer()
 void GameScene::initButtons()
 {
 	///////////////////////////////////////////
-	// button fire
+	// load button fire
 	buttonFire = cocos2d::Sprite::create("images/buttons/button_fire.png");
 	buttonFire->setPosition(
 		cocos2d::Vec2(
@@ -237,6 +237,24 @@ void GameScene::initButtons()
 	buttonFire->setPhysicsBody(buttonFireBody);
 
 	this->addChild(buttonFire);
+
+	//////////////////////////////////////////
+	// loadjoy stick origin sprite
+	joyStickOrigin = cocos2d::Sprite::create("images/buttons/joy_stick_origin.png");
+	joyStickOrigin->setPosition(cocos2d::Vec2());
+	joyStickOrigin->setVisible(false);
+
+	this->addChild(joyStickOrigin);
+
+	//////////////////////////////////////////
+	// load joy stick sprite
+	joyStick = cocos2d::Sprite::create("images/buttons/joy_stick.png");
+	joyStick->setPosition(cocos2d::Vec2());
+	joyStick->setVisible(false);
+
+	this->addChild(joyStick);
+
+	movementVector = cocos2d::Vec2();
 }
 
 
@@ -273,6 +291,7 @@ void GameScene::initMultiTouchEventListener()
 {
 	touchesListener = cocos2d::EventListenerTouchAllAtOnce::create();
 	
+	cocos2d::Sprite *&jStickOrigin = joyStickOrigin;
 	cocos2d::Sprite *&jStick = joyStick;
 	cocos2d::Sprite *&bFire = buttonFire;
 	Player *&pPlayer = player;
@@ -288,7 +307,14 @@ void GameScene::initMultiTouchEventListener()
 				player->createBullet(0);
 				this->schedule(schedule_selector(GameScene::playerShooting), __PLAYER_RELOAD_DURATION__);
 			}
+
+
 		}
+	};
+
+	touchesListener->onTouchesMoved =
+	[&](const std::vector<cocos2d::Touch *> touches, cocos2d::Event *event) {
+
 	};
 	
 	touchesListener->onTouchesEnded = 
