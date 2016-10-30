@@ -39,12 +39,16 @@ private:
 	cocos2d::Sprite *platform1;
 	cocos2d::Sprite *platform2;
 
-	Player *player;
-
-	cocos2d::Vec2 movementVector;
-	cocos2d::Sprite *joyStickOrigin;
-	cocos2d::Sprite *joyStick;
+	Player *player; 
 	cocos2d::Sprite *buttonFire;
+
+	cocos2d::Vec2 joyStickOrigin;
+	cocos2d::Vec2 joyStickFirstTouchPosition;
+	cocos2d::Vec2 joyStickDragged;
+	bool isUsingJoyStick;
+	cocos2d::Sprite *joyStick;
+	cocos2d::Sprite *joyStickOriginSprite;
+	cocos2d::LabelTTF *debugDraggedValue;
 
 	uint64_t countedFrames;
 	uint32_t remainingDistance;

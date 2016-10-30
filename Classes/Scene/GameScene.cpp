@@ -6,6 +6,7 @@
 #include "FinishedScene.h"
 #include "GameOverScene.h"
 #include "Toast.h"
+#include "CommonMath.h"
 
 #include "Enemy\Missile.h"
 #include "Enemy\AntiAircraftGun.h"
@@ -236,25 +237,50 @@ void GameScene::initButtons()
 	buttonFireBody->setCollisionBitmask(0);
 	buttonFire->setPhysicsBody(buttonFireBody);
 
-	this->addChild(buttonFire);
-
-	//////////////////////////////////////////
-	// loadjoy stick origin sprite
-	joyStickOrigin = cocos2d::Sprite::create("images/buttons/joy_stick_origin.png");
-	joyStickOrigin->setPosition(cocos2d::Vec2());
-	joyStickOrigin->setVisible(false);
-
-	this->addChild(joyStickOrigin);
+	this->addChild(buttonFire, 1000);
 
 	//////////////////////////////////////////
 	// load joy stick sprite
 	joyStick = cocos2d::Sprite::create("images/buttons/joy_stick.png");
-	joyStick->setPosition(cocos2d::Vec2());
-	joyStick->setVisible(false);
+	joyStick->setPosition(
+		cocos2d::Vec2(
+			origin.x + joyStick->getContentSize().width,
+			origin.y + joyStick->getContentSize().height
+		)
+	);
+	joyStickOrigin = joyStick->getPosition();
+	joyStickFirstTouchPosition = cocos2d::Vec2();
+	joyStickDragged = cocos2d::Vec2();
 
-	this->addChild(joyStick);
+	//////////////////////////////////////////
+	// add joy stick physics body
+	auto joyStickBody = cocos2d::PhysicsBody::createCircle(joyStick->getContentSize().width / 2);
+	joyStickBody->setDynamic(false);
+	joyStickBody->setContactTestBitmask(false);
+	joyStickBody->setCollisionBitmask(0);
+	joyStick->setPhysicsBody(joyStickBody);
 
-	movementVector = cocos2d::Vec2();
+	this->addChild(joyStick, 1000);
+	isUsingJoyStick = false;
+
+	/////////////////////////////////////////
+	// load joy stick origin sprite
+	joyStickOriginSprite = cocos2d::Sprite::create("images/buttons/joy_stick_origin.png");
+	joyStickOriginSprite->setPosition(joyStickOrigin);
+	joyStickOriginSprite->setCascadeOpacityEnabled(true);
+	joyStickOriginSprite->setOpacity(100);
+	this->addChild(joyStickOriginSprite, 900);
+
+	/////////////////////////////////////////
+	// Debug joy stick dragging
+	debugDraggedValue = cocos2d::LabelTTF::create("", "", 30);
+	debugDraggedValue->setPosition(
+		cocos2d::Vec2(
+			origin.x + visibleSize.width / 2,
+			origin.y + debugDraggedValue->getContentSize().height + 50
+		)
+	);
+	this->addChild(debugDraggedValue);
 }
 
 
@@ -290,42 +316,83 @@ void GameScene::initKeyboardEventListener()
 void GameScene::initMultiTouchEventListener()
 {
 	touchesListener = cocos2d::EventListenerTouchAllAtOnce::create();
-	
-	cocos2d::Sprite *&jStickOrigin = joyStickOrigin;
-	cocos2d::Sprite *&jStick = joyStick;
-	cocos2d::Sprite *&bFire = buttonFire;
-	Player *&pPlayer = player;
 
 	touchesListener->onTouchesBegan = 
 	[&](const std::vector<cocos2d::Touch *> touches, cocos2d::Event *event) {
 		
 		for (auto touch : touches) {
 			//Check if player touch on button fire
-			Node *node = this->getNodeUnderTouch(touch, bFire);
-			if (node && pPlayer->stillUnderControl()) {
-				bFire->setScale(1.1F);
+			Node *nFire = this->getNodeUnderTouch(touch, buttonFire);
+			if (
+				nFire && 
+				player->stillUnderControl()
+				) 
+			{
+				buttonFire->setScale(1.1F);
 				player->createBullet(0);
 				this->schedule(schedule_selector(GameScene::playerShooting), __PLAYER_RELOAD_DURATION__);
 			}
 
-
+			//Check if user touch on joy stick
+			Node *nJoyStick = this->getNodeUnderTouch(touch, joyStick);
+			if (
+				nJoyStick && 
+				player->stillUnderControl() && 
+				!isUsingJoyStick
+				) 
+			{
+				isUsingJoyStick = true;
+				joyStickFirstTouchPosition = touch->getLocation();
+			}
 		}
 	};
 
 	touchesListener->onTouchesMoved =
 	[&](const std::vector<cocos2d::Touch *> touches, cocos2d::Event *event) {
+		
+		for (auto touch : touches) {
+			//Check if user touch on joy stick
+			Node *nJoyStick = this->getNodeUnderTouch(touch, joyStick);
+			if (
+				nJoyStick &&
+				player->stillUnderControl() &&
+				isUsingJoyStick
+				)
+			{
+				joyStickDragged = (touch->getLocation() - joyStickFirstTouchPosition);
+				joyStickDragged.x = cocos2d::clampf(joyStickDragged.x, -100.0F, 100.0F);
+				joyStickDragged.y = cocos2d::clampf(joyStickDragged.y, -100.0F, 100.0F);
+				joyStick->setPosition(joyStickOrigin + joyStickDragged);
 
+				auto debugString = cocos2d::String::createWithFormat("(%.2f, %.2f)", joyStickDragged.x, joyStickDragged.y);
+				debugDraggedValue->setString(debugString->getCString());
+			}
+		}
 	};
 	
 	touchesListener->onTouchesEnded = 
 	[&](const std::vector<cocos2d::Touch *> touches, cocos2d::Event *event) {
 		
-		//Check if player untouched button fire
 		for (auto touch : touches) {
-			Node *node = this->getNodeUnderTouch(touch, bFire);
+			//Check if player untouched button fire
+			Node *node = this->getNodeUnderTouch(touch, buttonFire);
 			if (node) {
-				bFire->setScale(1.0F);
+				buttonFire->setScale(1.0F);
 				this->unschedule(schedule_selector(GameScene::playerShooting));
+			}
+
+			//Check if user touch on joy stick
+			Node *nJoyStick = this->getNodeUnderTouch(touch, joyStick);
+			if (
+				nJoyStick &&
+				player->stillUnderControl() &&
+				isUsingJoyStick
+				)
+			{
+				isUsingJoyStick = false;
+				joyStick->setPosition(joyStickOrigin);
+				joyStickFirstTouchPosition = cocos2d::Vec2();
+				joyStickDragged = cocos2d::Vec2();
 			}
 		}
 	};

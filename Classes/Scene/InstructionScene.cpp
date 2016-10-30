@@ -45,8 +45,8 @@ void InstructionScene::initDeclineInstruction()
 {
 	auto checkBox = cocos2d::ui::CheckBox::create();
 	checkBox->loadTextureBackGround("images/UI/check_box_unchecked.png");
-	checkBox->loadTextureBackGroundSelected("images/UI/check_box_selected.png");
 	checkBox->loadTextureFrontCross("images/UI/check_box_cross.png");
+	checkBox->loadTextureBackGroundDisabled("images/UI/check_box_selected.png");
 	checkBox->setPosition(
 		cocos2d::Vec2(
 			origin.x + checkBox->getContentSize().width + 50,
@@ -57,7 +57,7 @@ void InstructionScene::initDeclineInstruction()
 	this->addChild(checkBox);
 
 	auto label = cocos2d::LabelTTF::create("Don't show again!", "fonts/Schoolbook.ttf", 40);
-	label->setFontFillColor(cocos2d::Color3B::BLUE);
+	label->setFontFillColor(cocos2d::Color3B::GRAY);
 	label->setPosition(
 		cocos2d::Vec2(
 			checkBox->getPositionX() + checkBox->getContentSize().width + label->getContentSize().width / 2,
