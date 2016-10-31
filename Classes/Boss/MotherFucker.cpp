@@ -40,6 +40,12 @@ void MotherFucker::setStarted(bool started)
 }
 
 
+cocos2d::PhysicsBody * MotherFucker::getBossBody()
+{
+	return bossSprite->getPhysicsBody();
+}
+
+
 int MotherFucker::getHealth()
 {
 	return health;

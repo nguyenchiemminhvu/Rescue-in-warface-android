@@ -39,9 +39,7 @@ public:
 	bool stillUnderControl();
 	cocos2d::Vec2 getPlayerGunPosition();
 
-	void scheduleShooting();
-	void unscheduleShooting();
-	void createBullet(float t);
+	PlayerBullet* createBullet(float t);
 
 private:
 
@@ -80,6 +78,8 @@ public:
 
 	PlayerBullet(cocos2d::Layer *gameScene, cocos2d::Vec2 pos);
 	virtual ~PlayerBullet();
+
+	cocos2d::Sprite *getBulletSprite();
 
 private:
 

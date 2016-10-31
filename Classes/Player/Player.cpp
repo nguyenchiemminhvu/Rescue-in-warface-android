@@ -104,19 +104,6 @@ cocos2d::Vec2 Player::getPlayerGunPosition()
 }
 
 
-void Player::scheduleShooting()
-{
-	if (isUnderControl)
-		this->schedule(schedule_selector(Player::createBullet), __PLAYER_RELOAD_DURATION__);
-}
-
-
-void Player::unscheduleShooting()
-{
-	this->unschedule(schedule_selector(Player::createBullet));
-}
-
-
 void Player::initPlayerSprite()
 {
 	//////////////////////////////////////////
@@ -209,9 +196,9 @@ void Player::updatePlayerPosition(float dt)
 }
 
 
-void Player::createBullet(float t)
+PlayerBullet* Player::createBullet(float t)
 {
-	PlayerBullet *bullet = PlayerBullet::createBullet(gameScene, getPlayerGunPosition());
+	return PlayerBullet::createBullet(gameScene, getPlayerGunPosition());
 }
 
 /*============================================================*/
@@ -237,6 +224,12 @@ PlayerBullet::PlayerBullet(cocos2d::Layer * gameScene, cocos2d::Vec2 pos)
 PlayerBullet::~PlayerBullet()
 {
 
+}
+
+
+cocos2d::Sprite * PlayerBullet::getBulletSprite()
+{
+	return bulletSprite;
 }
 
 

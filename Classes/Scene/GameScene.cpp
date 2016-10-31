@@ -626,7 +626,20 @@ void GameScene::spawnGascan(float t)
 
 void GameScene::playerShooting(float t)
 {
-	player->createBullet(t);
+	PlayerBullet *bullet = player->createBullet(t);
+
+	auto bulletBody = bullet->getBulletSprite()->getPhysicsBody();
+	auto listenerBulletAndMiniBoss1 = cocos2d::EventListenerPhysicsContactWithBodies::create(bulletBody, miniBoss->getBossBody1());
+	auto listenerBulletAndMiniBoss2 = cocos2d::EventListenerPhysicsContactWithBodies::create(bulletBody, miniBoss->getBossBody2());
+	auto listenerBulletAndFinalBoss = cocos2d::EventListenerPhysicsContactWithBodies::create(bulletBody, motherFucker->getBossBody());
+
+	listenerBulletAndMiniBoss1->onContactBegin = CC_CALLBACK_1(GameScene::onPlayerBulletContactWithMiniBoss1, this);
+	listenerBulletAndMiniBoss2->onContactBegin = CC_CALLBACK_1(GameScene::onPlayerBulletContactWithMiniBoss2, this);
+	listenerBulletAndFinalBoss->onContactBegin = CC_CALLBACK_1(GameScene::onPlayerBulletContactWithMotherFucker, this);
+
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenerBulletAndMiniBoss1, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenerBulletAndMiniBoss2, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenerBulletAndFinalBoss, this);
 }
 
 

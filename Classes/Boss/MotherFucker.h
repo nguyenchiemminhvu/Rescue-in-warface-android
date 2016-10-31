@@ -18,6 +18,7 @@ public:
 	bool isStarted();
 	void setStarted(bool started);
 
+	cocos2d::PhysicsBody* getBossBody();
 	int getHealth();
 	void decreaseHealth();
 	void onBossDead();
