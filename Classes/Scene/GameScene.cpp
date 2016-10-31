@@ -464,7 +464,7 @@ void GameScene::updatePlayerFuel()
 
 void GameScene::updatePlayerScore()
 {
-
+	hud->updatePlayerScore(player->getScore());
 }
 
 /////////////////////////////////////////////
@@ -520,8 +520,17 @@ void GameScene::resetBackgroundPosition()
 
 void GameScene::pauseGame()
 {
-	auto pauseScene = PauseScene::createScene();
-	cocos2d::Director::getInstance()->pushScene(pauseScene);
+	/////////////////////////////////////////
+	// show pause game panel
+
+}
+
+
+void GameScene::resumeGame()
+{
+	/////////////////////////////////////////
+	// turn off pause game panel and continue playing
+
 }
 
 
@@ -681,7 +690,11 @@ void GameScene::invokeMotherFucker()
 
 void GameScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode key, cocos2d::Event * e)
 {
-	
+	if (key == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
+		
+		//Pause game
+
+	}
 }
 
 

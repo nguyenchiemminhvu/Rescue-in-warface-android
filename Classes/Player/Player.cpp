@@ -38,19 +38,19 @@ void Player::setPlayerMovementDirection(cocos2d::Vec2 vec)
 {
 	resetPlayerMovementDirection();
 
-	if (vec.x < 0) {
+	if (vec.x <= -(__JOY_STICK_ORIGIN_HALF_LENGTH__)) {
 		movementDirection |= MovementDirection::LEFT;
 	}
 	
-	if (vec.x > 0) {
+	if (vec.x >= __JOY_STICK_ORIGIN_HALF_LENGTH__) {
 		movementDirection |= MovementDirection::RIGHT;
 	}
 
-	if (vec.y > 0) {
+	if (vec.y >= __JOY_STICK_ORIGIN_HALF_LENGTH__) {
 		movementDirection |= MovementDirection::UP;
 	}
 
-	if (vec.y < 0) {
+	if (vec.y <= -(__JOY_STICK_ORIGIN_HALF_LENGTH__)) {
 		movementDirection |= MovementDirection::DOWN;
 	}
 }

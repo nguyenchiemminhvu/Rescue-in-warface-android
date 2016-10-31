@@ -8,6 +8,7 @@
 #define __PLAYER_ANIMATION_TOTAL_FRAME__ 2
 #define __PLAYER_RELOAD_DURATION__ 0.2F
 #define __HELICOPTER_FLYING_SPEED__ 100.0F
+#define __JOY_STICK_ORIGIN_HALF_LENGTH__ 10.0F
 
 class PlayerBullet;
 

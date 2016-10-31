@@ -47,6 +47,8 @@ private:
 #ifndef __ANTI_AIRCRAFT_MISSILE_H__
 #define __ANTI_AIRCRAFT_MISSILE_H__
 
+#define __ANTI_AIRCRAFT_MISSILE_FLYING_DURATION__ 1.5F
+
 class AntiAircraftMissile : public cocos2d::Node
 {
 public:

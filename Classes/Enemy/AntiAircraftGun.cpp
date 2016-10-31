@@ -165,14 +165,14 @@ cocos2d::Vec2 AntiAircraftGun::getTargetPosition()
 	{
 	case 0:
 		return cocos2d::Vec2(
-			cocos2d::random(origin.x + (visibleSize.width / 5), origin.x + (visibleSize.width / 5) * 3),
+			cocos2d::random(origin.x + (visibleSize.width / 5), origin.x + (visibleSize.width / 5) * 2),
 			origin.y + visibleSize.height
 		);
 		break;
 
 	case 1:
 		return cocos2d::Vec2(
-			cocos2d::random(origin.x + (visibleSize.width / 5) * 3, origin.x + (visibleSize.width / 5) * 5),
+			cocos2d::random(origin.x + (visibleSize.width / 5) * 3, origin.x + (visibleSize.width / 5) * 4),
 			origin.y + visibleSize.height
 		);
 		break;
@@ -248,7 +248,7 @@ void AntiAircraftMissile::initMissile()
 	///////////////////////////////////////
 	// setup missile action
 	auto sequence = cocos2d::Sequence::create(
-		cocos2d::MoveTo::create(1.0F, endPosition),
+		cocos2d::MoveTo::create(__ANTI_AIRCRAFT_MISSILE_FLYING_DURATION__, endPosition),
 		cocos2d::CallFunc::create(missileSprite, callfunc_selector(cocos2d::Sprite::removeFromParent)),
 		NULL
 	);

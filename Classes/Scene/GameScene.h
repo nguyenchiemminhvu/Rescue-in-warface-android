@@ -106,6 +106,7 @@ private:
 	void resetBackgroundPosition();
 
 	void pauseGame();
+	void resumeGame();
 	void replaceFinishedScene();
 	void replaceGameOverScene();
 
@@ -134,6 +135,7 @@ private:
 
 	//////////////////////////////////
 	// others
+
 	void invokeMiniBoss();
 	void invokeMotherFucker();
 
