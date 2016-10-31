@@ -7,17 +7,13 @@
 
 #define __PLAYER_ANIMATION_TOTAL_FRAME__ 2
 #define __PLAYER_RELOAD_DURATION__ 0.2F
+#define __HELICOPTER_FLYING_SPEED__ 100.0F
 
 class PlayerBullet;
 
 class Player : public cocos2d::Node
 {
 public:
-
-	enum PlayerProperties
-	{
-		FLYING_SPEED = 100
-	};
 
 	enum MovementDirection
 	{
@@ -30,9 +26,10 @@ public:
 	Player(cocos2d::Layer *gameScene);
 	virtual ~Player();
 
-	virtual void update(float dt);
+	void updatePlayerPosition(float dt);
 
-	void resetPlayerMovement();
+	void resetPlayerMovementDirection();
+	void setPlayerMovementDirection(cocos2d::Vec2 vec);
 	void decreaseFuel();
 	int getCurrentFuel();
 	void increaseScore(int amount);
@@ -54,16 +51,18 @@ private:
 
 	cocos2d::Sprite *playerSprite;
 
+	////////////////////////////////////////////
 	//Player properties
-	int movement;
 	int fuel;
-	unsigned long long score;
 	bool isUnderControl;
+	int movementDirection;
+	unsigned long long score;
 
+
+	////////////////////////////////////////////
+	// player initialization
 	void initPlayerSprite();
 	void initPlayerAnimation();
-
-	void updatePlayerPosition(float dt);
 };
 
 #endif //__PLAYER_H__

@@ -77,7 +77,7 @@ private:
 
 	void initHUD();
 	void initPlayer();
-	void initButtons();
+	void initJoyStick();
 
 	void initMiniBoss();
 	void initMotherFucker();
@@ -92,6 +92,7 @@ private:
 	void countingFrames();
 	void updateBackgroundAndPlatform(float dt);
 	void updateRemainingDistance();
+	void updatePlayerDirection();
 	void updatePlayerFuel();
 	void updatePlayerScore();
 

@@ -14,7 +14,7 @@ Player::Player(cocos2d::Layer *gameScene)
 	this->initPlayerSprite();
 	this->initPlayerAnimation();
 
-	movement = 0;
+	movementDirection = 0;
 	fuel = PLAYER_MAX_FUEL;
 	score = 0;
 	isUnderControl = true;
@@ -28,15 +28,31 @@ Player::~Player()
 }
 
 
-void Player::update(float dt)
+void Player::resetPlayerMovementDirection()
 {
-	updatePlayerPosition(dt);
+	movementDirection = 0;
 }
 
 
-void Player::resetPlayerMovement()
+void Player::setPlayerMovementDirection(cocos2d::Vec2 vec)
 {
-	movement = 0;
+	resetPlayerMovementDirection();
+
+	if (vec.x < 0) {
+		movementDirection |= MovementDirection::LEFT;
+	}
+	
+	if (vec.x > 0) {
+		movementDirection |= MovementDirection::RIGHT;
+	}
+
+	if (vec.y > 0) {
+		movementDirection |= MovementDirection::UP;
+	}
+
+	if (vec.y < 0) {
+		movementDirection |= MovementDirection::DOWN;
+	}
 }
 
 
@@ -122,7 +138,8 @@ void Player::initPlayerSprite()
 		cocos2d::PHYSICSBODY_MATERIAL_DEFAULT
 	);
 	playerBody->setGravityEnable(false);
-	playerBody->setDynamic(false);
+	playerBody->setDynamic(true);
+	playerBody->setRotationEnable(false);
 	playerBody->setContactTestBitmask(true);
 	playerBody->setCollisionBitmask((int)CollisionBitmask::PLAYER_COLLISTION_BITMASK);
 	playerSprite->setPhysicsBody(playerBody);
@@ -150,7 +167,45 @@ void Player::initPlayerAnimation()
 
 void Player::updatePlayerPosition(float dt)
 {
+	if (movementDirection & MovementDirection::LEFT) {
+		playerSprite->setPositionX(
+			cocos2d::clampf(
+				playerSprite->getPositionX() - __HELICOPTER_FLYING_SPEED__ * dt, 
+				origin.x + playerSprite->getContentSize().width / 2,
+				origin.x + visibleSize.width - playerSprite->getContentSize().width / 2
+			)
+		);
+	}
 
+	if (movementDirection & MovementDirection::RIGHT) {
+		playerSprite->setPositionX(
+			cocos2d::clampf(
+				playerSprite->getPositionX() + __HELICOPTER_FLYING_SPEED__ * dt,
+				origin.x + playerSprite->getContentSize().width / 2,
+				origin.x + visibleSize.width - playerSprite->getContentSize().width / 2
+			)
+		);
+	}
+
+	if (movementDirection & MovementDirection::UP) {
+		playerSprite->setPositionY(
+			cocos2d::clampf(
+				playerSprite->getPositionY() + __HELICOPTER_FLYING_SPEED__ * dt, 
+				origin.y + playerSprite->getContentSize().height / 2,
+				origin.y + visibleSize.height - playerSprite->getContentSize().height / 2
+			)
+		);
+	}
+
+	if (movementDirection & MovementDirection::DOWN) {
+		playerSprite->setPositionY(
+			cocos2d::clampf(
+				playerSprite->getPositionY() - __HELICOPTER_FLYING_SPEED__ * dt,
+				origin.y,
+				origin.y + visibleSize.height - playerSprite->getContentSize().height / 2
+			)
+		);
+	}
 }
 
 

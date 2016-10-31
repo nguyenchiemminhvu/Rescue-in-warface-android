@@ -52,7 +52,7 @@ bool GameScene::init()
 
 	initPlayer();
 	initHUD();
-	initButtons();
+	initJoyStick();
 
 	initContactListener();
 	initKeyboardEventListener();
@@ -79,6 +79,8 @@ void GameScene::update(float dt)
 	updateRemainingDistance();
 	updatePlayerFuel();
 	updatePlayerScore();
+	updatePlayerDirection();
+	player->updatePlayerPosition(dt);
 
 	if (remainingDistance <= 0) {
 		if (!miniBoss->isStarted()) {
@@ -216,7 +218,7 @@ void GameScene::initPlayer()
 }
 
 
-void GameScene::initButtons()
+void GameScene::initJoyStick()
 {
 	///////////////////////////////////////////
 	// load button fire
@@ -335,6 +337,7 @@ void GameScene::initMultiTouchEventListener()
 
 			//Check if user touch on joy stick
 			Node *nJoyStick = this->getNodeUnderTouch(touch, joyStick);
+
 			if (
 				nJoyStick && 
 				player->stillUnderControl() && 
@@ -353,6 +356,7 @@ void GameScene::initMultiTouchEventListener()
 		for (auto touch : touches) {
 			//Check if user touch on joy stick
 			Node *nJoyStick = this->getNodeUnderTouch(touch, joyStick);
+			
 			if (
 				nJoyStick &&
 				player->stillUnderControl() &&
@@ -381,14 +385,13 @@ void GameScene::initMultiTouchEventListener()
 				this->unschedule(schedule_selector(GameScene::playerShooting));
 			}
 
-			//Check if user touch on joy stick
-			Node *nJoyStick = this->getNodeUnderTouch(touch, joyStick);
+			//Check if user is using joy stick but not touch on it
 			if (
-				nJoyStick &&
 				player->stillUnderControl() &&
 				isUsingJoyStick
 				)
 			{
+				//reset joy stick position and dragged vector
 				isUsingJoyStick = false;
 				joyStick->setPosition(joyStickOrigin);
 				joyStickFirstTouchPosition = cocos2d::Vec2();
@@ -440,6 +443,12 @@ void GameScene::updateRemainingDistance()
 			hud->updateRemainingDistance(remainingDistance);
 		}
 	}
+}
+
+
+void GameScene::updatePlayerDirection()
+{
+	player->setPlayerMovementDirection(joyStickDragged);
 }
 
 
