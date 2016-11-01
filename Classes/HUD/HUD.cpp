@@ -1,5 +1,7 @@
 #include "HUD.h"
 #include "Enumeration.h"
+#include "SimpleAudioEngine.h"
+#include "Toast.h"
 
 
 HUD * HUD::createHUD()
@@ -59,7 +61,7 @@ void HUD::updatePlayerFuel(int rFuel)
 
 void HUD::updatePlayerScore(unsigned long long score)
 {
-	auto scoreText = cocos2d::__String::createWithFormat("Score: %ld", score);
+	auto scoreText = cocos2d::__String::createWithFormat("Score: %llu", score);
 	labelScore->setString(scoreText->getCString());
 }
 
@@ -78,6 +80,23 @@ void HUD::warning()
 			NULL
 		)
 	);
+}
+
+
+void HUD::onGamePause()
+{
+	pauseSprite->setVisible(true);
+	Toast::displayToast(this, "Press BACK button again to resume", 0.0F);
+	CocosDenshion::SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+	cocos2d::Director::getInstance()->pause();
+}
+
+
+void HUD::onGameResume()
+{
+	pauseSprite->setVisible(false);
+	CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+	cocos2d::Director::getInstance()->resume();
 }
 
 
@@ -143,11 +162,24 @@ void HUD::initComponents()
 	turnOffWarning();
 
 	///////////////////////////////////////
+	// Pause game sprite
+	pauseSprite = cocos2d::Sprite::create("images/UI/game_paused.png");
+	pauseSprite->setPosition(
+		cocos2d::Vec2(
+			origin.x + visibleSize.width / 2,
+			origin.y + visibleSize.height / 2
+		)
+	);
+	pauseSprite->setVisible(false);
+
+
+	///////////////////////////////////////
 	// Add all components to HUD
 	this->addChild(labelDistance);
 	this->addChild(labelScore);
 	this->addChild(labelFuel);
 	this->addChild(labelWarning);
+	this->addChild(pauseSprite);
 
 	this->scheduleUpdate();
 }

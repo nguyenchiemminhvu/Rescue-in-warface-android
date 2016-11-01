@@ -34,6 +34,8 @@ bool GameScene::init()
 	if(!cocos2d::Layer::init())
 		return false;
 
+	isGameRunning = true;
+
 	origin = cocos2d::Director::getInstance()->getVisibleOrigin();
 	visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
@@ -295,6 +297,8 @@ void GameScene::initMotherFucker()
 	motherFucker = new MotherFucker(this);
 }
 
+//////////////////////////////////////////////////////
+// Event listeners
 
 void GameScene::initContactListener()
 {
@@ -381,6 +385,7 @@ void GameScene::initMultiTouchEventListener()
 			if (node) {
 				buttonFire->setScale(1.0F);
 				this->unschedule(schedule_selector(GameScene::playerShooting));
+				continue;
 			}
 
 			//Check if user is using joy stick but not touch on it
@@ -394,6 +399,7 @@ void GameScene::initMultiTouchEventListener()
 				joyStick->setPosition(joyStickOrigin);
 				joyStickFirstTouchPosition = cocos2d::Vec2();
 				joyStickDragged = cocos2d::Vec2();
+				continue;
 			}
 		}
 	};
@@ -513,22 +519,6 @@ void GameScene::resetBackgroundPosition()
 			background1->getPositionY()
 		)
 	);
-}
-
-
-void GameScene::pauseGame()
-{
-	/////////////////////////////////////////
-	// show pause game panel
-
-}
-
-
-void GameScene::resumeGame()
-{
-	/////////////////////////////////////////
-	// turn off pause game panel and continue playing
-
 }
 
 
@@ -833,8 +823,16 @@ void GameScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode key, cocos2d::Event
 {
 	if (key == cocos2d::EventKeyboard::KeyCode::KEY_ESCAPE) {
 		
-		//Pause game
-
+		if (isGameRunning) 
+		{
+			isGameRunning = false;
+			hud->onGamePause();
+		}
+		else
+		{
+			isGameRunning = true;
+			hud->onGameResume();
+		}
 	}
 }
 

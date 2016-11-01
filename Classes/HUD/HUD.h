@@ -28,6 +28,8 @@ public:
 	void updatePlayerFuel(int rFuel);
 	void updatePlayerScore(unsigned long long score);
 	void warning();
+	void onGamePause();
+	void onGameResume();
 
 private:
 
@@ -38,6 +40,8 @@ private:
 	cocos2d::LabelTTF *labelScore;
 	cocos2d::LabelTTF *labelFuel;
 	cocos2d::LabelTTF *labelWarning;
+
+	cocos2d::Sprite *pauseSprite;
 
 	void initComponents();
 	void turnOnWarning();

@@ -30,6 +30,7 @@ public:
 
 private:
 
+	bool isGameRunning;
 	cocos2d::PhysicsWorld *world;
 
 	cocos2d::Vec2 origin;
@@ -83,6 +84,9 @@ private:
 	void initMiniBoss();
 	void initMotherFucker();
 
+	////////////////////////////////////
+	// event listener
+
 	void initContactListener();
 	void initKeyboardEventListener();
 	void initMultiTouchEventListener();
@@ -106,8 +110,6 @@ private:
 	void resetPlatformPosition();
 	void resetBackgroundPosition();
 
-	void pauseGame();
-	void resumeGame();
 	void replaceFinishedScene();
 	void replaceGameOverScene();
 

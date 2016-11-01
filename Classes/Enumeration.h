@@ -3,59 +3,59 @@
 ////////////////////////////////////////
 // Transition time
 
-const float	TRANSITION_FADE_TIME = 2.0F;
-const float TRANSITION_PROGRESS_IN_OUT = 1.0F;
-const float AVERAGE_DELTA_TIME = 0.0165F;
+#define TRANSITION_FADE_TIME 2.0F
+#define TRANSITION_PROGRESS_IN_OUT 1.0F
+#define AVERAGE_DELTA_TIME 0.0165F
 
 ////////////////////////////////////////
 // Schedule time
 
-const float SCHEDULE_TRANSITION_TIME = 3.0F;
-const float HUD_WARNING_DELAY_TIME = 0.5F;
+#define SCHEDULE_TRANSITION_TIME 3.0F
+#define HUD_WARNING_DELAY_TIME 0.5F
 
 ////////////////////////////////////////
 // Enemy
 
-const float TOWER_SPAWN_DURATION = 15.0F;
-const float ANTI_AIRCRAFT_SPAWN_DURATION = 8.0F;
-const float ANTI_AIRCRAFT_RELOAD_DURATION = 3.0F;
-const float RANGE_MISSILE_SPAWN_DURATION = 4.0F;
-const float MISSILE_FLYING_DURATION = 2.0F;
-const float TOWER_BULLET_DURATION = 3.0F;
-const float TOWER_RELOAD_DURATION = 2.5F;
+#define TOWER_SPAWN_DURATION 15.0F
+#define ANTI_AIRCRAFT_SPAWN_DURATION 8.0F
+#define ANTI_AIRCRAFT_RELOAD_DURATION 3.0F
+#define RANGE_MISSILE_SPAWN_DURATION 4.0F
+#define MISSILE_FLYING_DURATION 2.0F
+#define TOWER_BULLET_DURATION 3.0F
+#define TOWER_RELOAD_DURATION 2.5F
 
 ///////////////////////////////////////
-// Thickness
+// Platform thickness
 
-const float PLATFORM_THICKNESS = 168.0F;
+#define PLATFORM_THICKNESS 168.0F
 
 ///////////////////////////////////////
 // Introduction scene durations
 
-const float HELICOPTER_COMING_DURATION = 7;
-const float HELICOPTER_LANDING_DURATION = 5;
-const float SOLDIER_MOVING_DURATION = 3;
-const float HELICOPTER_LEAVING_DURATION = 6;
+#define HELICOPTER_COMING_DURATION 7
+#define HELICOPTER_LANDING_DURATION 5
+#define SOLDIER_MOVING_DURATION 3
+#define HELICOPTER_LEAVING_DURATION 6
 
 ///////////////////////////////////////
 // Game scene distance
 
-const float BACKGROUND_SHIFT_DISTANCE = 100.0F;
-const int GAME_SCENE_TOTAL_DISTANCE = 50;
-const float GASCAN_FALLING_DURATION = 7.0F;
+#define BACKGROUND_SHIFT_DISTANCE 100.0F
+#define GAME_SCENE_TOTAL_DISTANCE 50
+#define GASCAN_FALLING_DURATION 7.0F
 
 ///////////////////////////////////////
 // Player
 
-const int PLAYER_MAX_FUEL = 20;
-const float GASCAN_SPAWN_DURATION = 20.0F;
+#define PLAYER_MAX_FUEL 20
+#define GASCAN_SPAWN_DURATION 20.0F
 
 ///////////////////////////////////////
 // Boss
 
-const float MINI_BOSS_PREPARE_DURATION = 3.0F;
-const float BIG_BOSS_PREPARE_DURATION = 3.0F;
-const int MINI_BOSS_MAX_HEALTH = 50;
+#define MINI_BOSS_PREPARE_DURATION 3.0F
+#define BIG_BOSS_PREPARE_DURATION 3.0F
+#define MINI_BOSS_MAX_HEALTH 50
 
 ////////////////////////////////////////
 // Collision bitmask
