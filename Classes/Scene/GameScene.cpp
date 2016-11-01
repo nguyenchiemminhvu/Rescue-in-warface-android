@@ -12,8 +12,6 @@
 #include "Enemy\AntiAircraftGun.h"
 #include "Enemy\Tower.h"
 
-#include "Player\Gascan.h"
-
 
 cocos2d::Scene * GameScene::createScene()
 {
@@ -537,26 +535,145 @@ void GameScene::resumeGame()
 void GameScene::replaceFinishedScene()
 {
 	auto finishedScene = FinishedScene::createScene();
-	cocos2d::Director::getInstance()->replaceScene(cocos2d::CCTransitionFade::create(TRANSITION_FADE_TIME, finishedScene));
+	cocos2d::Director::getInstance()->replaceScene(cocos2d::CCTransitionFade::create(TRANSITION_FADE_TIME * 2, finishedScene));
 }
 
 
 void GameScene::replaceGameOverScene()
 {
+	stopGameMusic();
 	auto gameOverScene = GameOverScene::createScene();
 	cocos2d::Director::getInstance()->replaceScene(gameOverScene);
 }
 
 
+///////////////////////////////////////////////////////////
+// physics contact detection
+
 bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 {
 	auto shapeA = contact.getShapeA();
 	auto shapeB = contact.getShapeB();
+	auto nodeA = shapeA->getBody()->getNode();
+	auto nodeB = shapeB->getBody()->getNode();
 
 	auto bitmaskA = shapeA->getCollisionBitmask();
 	auto bitmaskB = shapeB->getCollisionBitmask();
+	
+	//Player collided with obstacle
+	if (
+		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK && bitmaskB == (int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK) ||
+		(bitmaskA == (int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK)
+		) 
+	{
+		_eventDispatcher->removeAllEventListeners();
+		replaceGameOverScene();
+	}
+
+	//Player collided with enemy bullet
+	if (
+		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK && bitmaskB == (int)CollisionBitmask::ENEMY_BULLET_BISMASK) ||
+		(bitmaskA == (int)CollisionBitmask::ENEMY_BULLET_BISMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK)
+		)
+	{
+		_eventDispatcher->removeAllEventListeners();
+		replaceGameOverScene();
+	}
+
+	//Player collided with enemy physics body
+	if (
+		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK && bitmaskB == (int)CollisionBitmask::ENEMY_COLLISION_BITMASK) ||
+		(bitmaskA == (int)CollisionBitmask::ENEMY_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK)
+		)
+	{
+		_eventDispatcher->removeAllEventListeners();
+		replaceGameOverScene();
+	}
+
+	//Player collided with boss physics body
+	if (
+		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK && bitmaskB == (int)CollisionBitmask::BOSS_COLLISION_BITMASK) ||
+		(bitmaskA == (int)CollisionBitmask::BOSS_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK)
+		)
+	{
+		_eventDispatcher->removeAllEventListeners();
+		replaceGameOverScene();
+	}
+	
+	//Player collided with gascan
+	if (
+		bitmaskA == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK && 
+		bitmaskB == (int)CollisionBitmask::GASCAN_COLLISION_BITMASK
+		)
+	{
+		shapeB->getBody()->getNode()->removeFromParentAndCleanup(false);
+		shapeB->getBody()->removeFromWorld();
+		nodeB->release();
+	}
+
+	//in opposite, gascan collided with player
+	if (
+		bitmaskA == (int)CollisionBitmask::GASCAN_COLLISION_BITMASK &&
+		bitmaskB == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK
+		)
+	{
+		shapeA->getBody()->getNode()->removeFromParentAndCleanup(false);
+		shapeA->getBody()->removeFromWorld();
+		nodeA->release();
+	}
+
+	//Player's bullet collided with obstacle, then remove bullet from scene
+	if (
+		bitmaskA == (int)CollisionBitmask::PLAYER_BULLET_BITMASK &&
+		bitmaskB == (int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK
+		)
+	{
+		shapeA->getBody()->getNode()->removeFromParentAndCleanup(false);
+		shapeA->getBody()->removeFromWorld();
+		nodeA->release();
+	}
+
+	//Player's bullet collided with obstacle, then remove bullet from scene
+	if (
+		bitmaskA == (int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK &&
+		bitmaskB == (int)CollisionBitmask::PLAYER_BULLET_BITMASK
+		)
+	{
+		shapeB->getBody()->getNode()->removeFromParentAndCleanup(false);
+		shapeB->getBody()->removeFromWorld();
+		nodeB->release();
+	}
+
+	//Player's bullet collided with boss, remove it from scene too
+	if (
+		bitmaskA == (int)CollisionBitmask::PLAYER_BULLET_BITMASK &&
+		bitmaskB == (int)CollisionBitmask::BOSS_COLLISION_BITMASK
+		)
+	{
+		shapeA->getBody()->getNode()->removeFromParentAndCleanup(false);
+		shapeA->getBody()->removeFromWorld();
+		nodeA->release();
+	}
+
+	//In opposite, boss collided with player's bullet, remove the bullet
+	if (
+		bitmaskA == (int)CollisionBitmask::BOSS_COLLISION_BITMASK &&
+		bitmaskB == (int)CollisionBitmask::PLAYER_BULLET_BITMASK
+		)
+	{
+		shapeB->getBody()->getNode()->removeFromParentAndCleanup(false);
+		shapeB->getBody()->removeFromWorld();
+		nodeB->release();
+	}
+
+	return true;
+}
 
 
+bool GameScene::onPlayerContactWithGascan(cocos2d::PhysicsContact & contact)
+{
+	player->increaseFuel(__GASCAN_FUEL_APPLY__);
+	player->increaseScore(__GASCAN_SCORE__);
 
 	return true;
 }
@@ -566,7 +683,7 @@ bool GameScene::onPlayerBulletContactWithMiniBoss1(cocos2d::PhysicsContact & con
 {
 	miniBoss->decreaseHealth1();
 	if (miniBoss->isBossDead1()) {
-		
+		player->increaseScore(__MINI_BOSS_SCORE__);
 	}
 
 	if (miniBoss->isBossDead2() && miniBoss->isBossDead1()) {
@@ -581,7 +698,7 @@ bool GameScene::onPlayerBulletContactWithMiniBoss2(cocos2d::PhysicsContact & con
 {
 	miniBoss->decreaseHealth2();
 	if (miniBoss->isBossDead2()) {
-		
+		player->increaseScore(__MINI_BOSS_SCORE__);
 	}
 
 	if (miniBoss->isBossDead1() && miniBoss->isBossDead2()) {
@@ -594,6 +711,12 @@ bool GameScene::onPlayerBulletContactWithMiniBoss2(cocos2d::PhysicsContact & con
 
 bool GameScene::onPlayerBulletContactWithMotherFucker(cocos2d::PhysicsContact & contact)
 {
+	motherFucker->decreaseHealth();
+	if (motherFucker->isBossDead()) {
+		player->increaseScore(__MOTHER_FUCKER_SCORE__);
+		replaceFinishedScene();
+	}
+
 	return true;
 }
 
@@ -620,7 +743,12 @@ void GameScene::spawnTower(float t)
 
 void GameScene::spawnGascan(float t)
 {
-	auto gascan = Gascan::spawnGascan(this);
+	auto currentGascan = Gascan::spawnGascan(this);
+
+	auto gascanBody = currentGascan->getGascanPhysicsBody();
+	auto listenerPlayerAndGascan = cocos2d::EventListenerPhysicsContactWithBodies::create(player->getPlayerPhysicsBody(), gascanBody);
+	listenerPlayerAndGascan->onContactBegin = CC_CALLBACK_1(GameScene::onPlayerContactWithGascan, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listenerPlayerAndGascan, this);
 }
 
 

@@ -28,6 +28,12 @@ Player::~Player()
 }
 
 
+cocos2d::PhysicsBody * Player::getPlayerPhysicsBody()
+{
+	return playerSprite->getPhysicsBody();
+}
+
+
 void Player::resetPlayerMovementDirection()
 {
 	movementDirection = 0;
@@ -53,6 +59,14 @@ void Player::setPlayerMovementDirection(cocos2d::Vec2 vec)
 	if (vec.y <= -(__JOY_STICK_ORIGIN_HALF_LENGTH__)) {
 		movementDirection |= MovementDirection::DOWN;
 	}
+}
+
+
+void Player::increaseFuel(int amount)
+{
+	fuel += amount;
+	if (fuel > __HELICOPTER_MAX_FUEL__)
+		fuel = __HELICOPTER_MAX_FUEL__;
 }
 
 
@@ -243,7 +257,8 @@ void PlayerBullet::initPlayerBullet()
 	////////////////////////////////////////////
 	// add bullet physics body
 	auto bulletBody = cocos2d::PhysicsBody::createBox(bulletSprite->getContentSize());
-	bulletBody->setDynamic(false);
+	bulletBody->setDynamic(true);
+	bulletBody->setGravityEnable(false);
 	bulletBody->setContactTestBitmask(true);
 	bulletBody->setCollisionBitmask((int)CollisionBitmask::PLAYER_BULLET_BITMASK);
 	bulletSprite->setPhysicsBody(bulletBody);

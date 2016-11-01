@@ -28,6 +28,12 @@ Gascan::~Gascan()
 }
 
 
+cocos2d::PhysicsBody * Gascan::getGascanPhysicsBody()
+{
+	return gascanSprite->getPhysicsBody();
+}
+
+
 void Gascan::initGascan()
 {
 	///////////////////////////////////////////////

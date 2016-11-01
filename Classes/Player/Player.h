@@ -9,6 +9,7 @@
 #define __PLAYER_RELOAD_DURATION__ 0.2F
 #define __HELICOPTER_FLYING_SPEED__ 100.0F
 #define __JOY_STICK_ORIGIN_HALF_LENGTH__ 10.0F
+#define __HELICOPTER_MAX_FUEL__ 20
 
 class PlayerBullet;
 
@@ -27,10 +28,13 @@ public:
 	Player(cocos2d::Layer *gameScene);
 	virtual ~Player();
 
+	cocos2d::PhysicsBody* getPlayerPhysicsBody();
+
 	void updatePlayerPosition(float dt);
 
 	void resetPlayerMovementDirection();
 	void setPlayerMovementDirection(cocos2d::Vec2 vec);
+	void increaseFuel(int amount);
 	void decreaseFuel();
 	int getCurrentFuel();
 	void increaseScore(int amount);

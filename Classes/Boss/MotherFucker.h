@@ -7,6 +7,7 @@
 
 #define __MOTHER_FUCKER_TOTAL_BULLET__ 3
 #define	__MOTHER_FUCKER_MAX_HEALTH__ 40
+#define __MOTHER_FUCKER_SCORE__ 500
 
 class MotherFucker : public cocos2d::Node
 {

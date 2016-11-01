@@ -5,6 +5,9 @@
 
 #include "cocos2d.h"
 
+#define __GASCAN_FUEL_APPLY__ 5
+#define __GASCAN_SCORE__ 10
+
 class Gascan : public cocos2d::Node
 {
 public:
@@ -13,6 +16,8 @@ public:
 
 	Gascan(cocos2d::Layer *gameScene);
 	virtual ~Gascan();
+
+	cocos2d::PhysicsBody* getGascanPhysicsBody();
 
 private:
 

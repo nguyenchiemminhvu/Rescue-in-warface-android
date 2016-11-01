@@ -5,6 +5,8 @@
 
 #include "cocos2d.h"
 
+#define __MINI_BOSS_SCORE__ 100
+
 class MiniBoss : public cocos2d::Node
 {
 public:

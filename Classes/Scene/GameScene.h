@@ -8,6 +8,7 @@
 
 #include "HUD\HUD.h"
 #include "Player\Player.h"
+#include "Player\Gascan.h"
 #include "Boss\MiniBoss.h"
 #include "Boss\MotherFucker.h"
 
@@ -39,7 +40,7 @@ private:
 	cocos2d::Sprite *platform1;
 	cocos2d::Sprite *platform2;
 
-	Player *player; 
+	Player *player;
 	cocos2d::Sprite *buttonFire;
 
 	cocos2d::Vec2 joyStickOrigin;
@@ -110,7 +111,11 @@ private:
 	void replaceFinishedScene();
 	void replaceGameOverScene();
 
+	////////////////////////////////////
+	// physics contact detection
+
 	bool onContactBegin(cocos2d::PhysicsContact &contact);
+	bool onPlayerContactWithGascan(cocos2d::PhysicsContact &contact);
 	bool onPlayerBulletContactWithMiniBoss1(cocos2d::PhysicsContact &contact);
 	bool onPlayerBulletContactWithMiniBoss2(cocos2d::PhysicsContact &contact);
 	bool onPlayerBulletContactWithMotherFucker(cocos2d::PhysicsContact &contact);

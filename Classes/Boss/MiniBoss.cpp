@@ -124,10 +124,6 @@ void MiniBoss::onBossDead1()
 	dead1 = true;
 	bossSprite1->getPhysicsBody()->removeFromWorld();
 	bossSprite1->removeFromParentAndCleanup(true);
-
-	if (dead2) {
-		
-	}
 }
 
 
@@ -137,10 +133,6 @@ void MiniBoss::onBossDead2()
 	dead2 = true;
 	bossSprite2->getPhysicsBody()->removeFromWorld();
 	bossSprite2->removeFromParentAndCleanup(true);
-
-	if (dead1) {
-		
-	}
 }
 
 
