@@ -1,4 +1,5 @@
 #include "Missile.h"
+#include "Tower.h"
 #include "Enumeration.h"
 #include "SimpleAudioEngine.h"
 
@@ -42,8 +43,8 @@ void Missile::createMissile(float playerPosY)
 
 	missileSprite = cocos2d::Sprite::create("images/enemy/missile.png");
 	float randomPosY = cocos2d::random(playerPosY - 100, playerPosY + 100);
-	if (randomPosY < origin.y + PLATFORM_THICKNESS) {
-		randomPosY = cocos2d::random(playerPosY, playerPosY + 200);
+	if (randomPosY < origin.y + PLATFORM_THICKNESS + TOWER_HEIGHT) {
+		randomPosY = origin.y + PLATFORM_THICKNESS + TOWER_HEIGHT;
 	}
 	missileSprite->setPosition(
 		cocos2d::Vec2(

@@ -557,7 +557,15 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		) 
 	{
 		_eventDispatcher->removeAllEventListeners();
-		replaceGameOverScene();
+		player->explodingHelicopter();
+		this->runAction(
+			cocos2d::Sequence::create(
+				cocos2d::DelayTime::create(SCHEDULE_TRANSITION_TIME),
+				cocos2d::CallFunc::create(this, callfunc_selector(GameScene::replaceGameOverScene)),
+				NULL
+			)
+		);
+		return true;
 	}
 
 	//Player collided with enemy bullet
@@ -567,7 +575,15 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		)
 	{
 		_eventDispatcher->removeAllEventListeners();
-		replaceGameOverScene();
+		player->explodingHelicopter();
+		this->runAction(
+			cocos2d::Sequence::create(
+				cocos2d::DelayTime::create(SCHEDULE_TRANSITION_TIME),
+				cocos2d::CallFunc::create(this, callfunc_selector(GameScene::replaceGameOverScene)),
+				NULL
+			)
+		);
+		return true;
 	}
 
 	//Player collided with enemy physics body
@@ -577,7 +593,15 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		)
 	{
 		_eventDispatcher->removeAllEventListeners();
-		replaceGameOverScene();
+		player->explodingHelicopter();
+		this->runAction(
+			cocos2d::Sequence::create(
+				cocos2d::DelayTime::create(SCHEDULE_TRANSITION_TIME),
+				cocos2d::CallFunc::create(this, callfunc_selector(GameScene::replaceGameOverScene)),
+				NULL
+			)
+		);
+		return true;
 	}
 
 	//Player collided with boss physics body
@@ -587,7 +611,15 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		)
 	{
 		_eventDispatcher->removeAllEventListeners();
-		replaceGameOverScene();
+		player->explodingHelicopter();
+		this->runAction(
+			cocos2d::Sequence::create(
+				cocos2d::DelayTime::create(SCHEDULE_TRANSITION_TIME),
+				cocos2d::CallFunc::create(this, callfunc_selector(GameScene::replaceGameOverScene)),
+				NULL
+			)
+		);
+		return true;
 	}
 	
 	//Player collided with gascan
@@ -599,6 +631,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		shapeB->getBody()->getNode()->removeFromParentAndCleanup(false);
 		shapeB->getBody()->removeFromWorld();
 		nodeB->release();
+		return true;
 	}
 
 	//in opposite, gascan collided with player
@@ -610,6 +643,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		shapeA->getBody()->getNode()->removeFromParentAndCleanup(false);
 		shapeA->getBody()->removeFromWorld();
 		nodeA->release();
+		return true;
 	}
 
 	//Player's bullet collided with obstacle, then remove bullet from scene
@@ -621,6 +655,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		shapeA->getBody()->getNode()->removeFromParentAndCleanup(false);
 		shapeA->getBody()->removeFromWorld();
 		nodeA->release();
+		return true;
 	}
 
 	//Player's bullet collided with obstacle, then remove bullet from scene
@@ -632,6 +667,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		shapeB->getBody()->getNode()->removeFromParentAndCleanup(false);
 		shapeB->getBody()->removeFromWorld();
 		nodeB->release();
+		return true;
 	}
 
 	//Player's bullet collided with boss, remove it from scene too
@@ -643,6 +679,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		shapeA->getBody()->getNode()->removeFromParentAndCleanup(false);
 		shapeA->getBody()->removeFromWorld();
 		nodeA->release();
+		return true;
 	}
 
 	//In opposite, boss collided with player's bullet, remove the bullet
@@ -654,6 +691,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		shapeB->getBody()->getNode()->removeFromParentAndCleanup(false);
 		shapeB->getBody()->removeFromWorld();
 		nodeB->release();
+		return true;
 	}
 
 	return true;
@@ -704,7 +742,13 @@ bool GameScene::onPlayerBulletContactWithMotherFucker(cocos2d::PhysicsContact & 
 	motherFucker->decreaseHealth();
 	if (motherFucker->isBossDead()) {
 		player->increaseScore(__MOTHER_FUCKER_SCORE__);
-		replaceFinishedScene();
+		this->runAction(
+			cocos2d::Sequence::create(
+				cocos2d::DelayTime::create(SCHEDULE_TRANSITION_TIME),
+				cocos2d::CallFunc::create(this, callfunc_selector(GameScene::replaceFinishedScene)),
+				NULL
+			)
+		);
 	}
 
 	return true;
@@ -721,7 +765,7 @@ void GameScene::spawnTank(float t)
 
 void GameScene::spawnMissile(float t)
 {
-	auto missile = Missile::spawnMissile(this, origin.y + visibleSize.height / 2);
+	auto missile = Missile::spawnMissile(this, player->getPlayerCurrentPosition().y);
 }
 
 
@@ -733,7 +777,7 @@ void GameScene::spawnTower(float t)
 
 void GameScene::spawnGascan(float t)
 {
-	auto currentGascan = Gascan::spawnGascan(this);
+	auto currentGascan = Gascan::spawnGascan(this, player->getPlayerCurrentPosition().x);
 
 	auto gascanBody = currentGascan->getGascanPhysicsBody();
 	auto listenerPlayerAndGascan = cocos2d::EventListenerPhysicsContactWithBodies::create(player->getPlayerPhysicsBody(), gascanBody);

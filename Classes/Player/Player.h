@@ -5,13 +5,15 @@
 
 #include "cocos2d.h"
 
-#define __PLAYER_ANIMATION_TOTAL_FRAME__ 2
+#define __PLAYER_FLYING_ANIMATION_TOTAL_FRAME__ 2
+#define __PLAYER_EXPLODING_ANIMATION_TOTAL_FRAME__ 5
 #define __PLAYER_RELOAD_DURATION__ 0.2F
 #define __HELICOPTER_FLYING_SPEED__ 100.0F
 #define __JOY_STICK_ORIGIN_HALF_LENGTH__ 10.0F
 #define __HELICOPTER_MAX_FUEL__ 20
 
 class PlayerBullet;
+class Explosion;
 
 class Player : public cocos2d::Node
 {
@@ -31,6 +33,7 @@ public:
 	cocos2d::PhysicsBody* getPlayerPhysicsBody();
 
 	void updatePlayerPosition(float dt);
+	void explodingHelicopter();
 
 	void resetPlayerMovementDirection();
 	void setPlayerMovementDirection(cocos2d::Vec2 vec);
@@ -41,6 +44,7 @@ public:
 	unsigned long long getScore();
 	void lostControl();
 	bool stillUnderControl();
+	cocos2d::Vec2 getPlayerCurrentPosition();
 	cocos2d::Vec2 getPlayerGunPosition();
 
 	PlayerBullet* createBullet(float t);
@@ -99,3 +103,23 @@ private:
 };
 
 #endif // !__PLAYER_BULLET_H__
+
+#ifndef __EXPLOSION_H__
+#define __EXPLOSION_H__
+
+class Explosion : public cocos2d::Node
+{
+public:
+
+	Explosion(cocos2d::Layer *gameScene, cocos2d::Vec2 pos);
+	virtual ~Explosion();
+
+private:
+
+	cocos2d::Layer *gameScene;
+	cocos2d::Vec2 explodePos;
+
+	void initExplosion();
+};
+
+#endif // !__EXPLOSION_H__

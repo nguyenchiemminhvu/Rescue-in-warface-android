@@ -6,6 +6,7 @@
 #include "cocos2d.h"
 
 #define TOWER_TOTAL_BULLET 4
+#define TOWER_HEIGHT 200
 
 class Tower : public cocos2d::Node
 {

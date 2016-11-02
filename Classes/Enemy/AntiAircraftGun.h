@@ -6,7 +6,6 @@
 #include "cocos2d.h"
 
 class AntiAircraftMissile;
-class Explosion;
 
 class AntiAircraftGun : public cocos2d::Node
 {
@@ -81,23 +80,3 @@ private:
 };
 
 #endif // !__ANTI_AIRCRAFT_MISSILE_H__
-
-#ifndef __EXPLOSION_H__
-#define __EXPLOSION_H__
-
-class Explosion : public cocos2d::Node
-{
-public:
-
-	Explosion(cocos2d::Layer *gameScene, cocos2d::Vec2 pos);
-	virtual ~Explosion();
-
-private:
-
-	cocos2d::Layer *gameScene;
-	cocos2d::Vec2 explodePos;
-
-	void initExplosion();
-};
-
-#endif // !__EXPLOSION_H__

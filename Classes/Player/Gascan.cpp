@@ -3,15 +3,16 @@
 #include "PhysicsBodyParser\PhysicsBodyParser.h"
 
 
-Gascan * Gascan::spawnGascan(cocos2d::Layer * gameScene)
+Gascan * Gascan::spawnGascan(cocos2d::Layer * gameScene, float playerPosX)
 {
-	return new Gascan(gameScene);
+	return new Gascan(gameScene, playerPosX);
 }
 
 
-Gascan::Gascan(cocos2d::Layer * gameScene)
+Gascan::Gascan(cocos2d::Layer * gameScene, float playerPosX)
 {
 	this->gameScene = gameScene;
+	this->playerPosX = playerPosX;
 	this->autorelease();
 
 	origin = cocos2d::Director::getInstance()->getVisibleOrigin();
@@ -42,7 +43,7 @@ void Gascan::initGascan()
 	gascanSprite = cocos2d::Sprite::create("images/player/gascan.png");
 	gascanSprite->setPosition(
 		cocos2d::Vec2(
-			origin.x + visibleSize.width / 2,
+			playerPosX,
 			origin.y + visibleSize.height + gascanSprite->getContentSize().height / 2
 		)
 	);

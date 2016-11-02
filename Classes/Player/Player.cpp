@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Enumeration.h"
+#include "SimpleAudioEngine.h"
 #include "PhysicsBodyParser\PhysicsBodyParser.h"
 #include <string>
 
@@ -109,6 +110,12 @@ bool Player::stillUnderControl()
 }
 
 
+cocos2d::Vec2 Player::getPlayerCurrentPosition()
+{
+	return playerSprite->getPosition();
+}
+
+
 cocos2d::Vec2 Player::getPlayerGunPosition()
 {
 	return cocos2d::Vec2(
@@ -151,18 +158,19 @@ void Player::initPlayerSprite()
 
 void Player::initPlayerAnimation()
 {
-	cocos2d::Vector<cocos2d::SpriteFrame *> frames;
-	for (int i = 0; i < __PLAYER_ANIMATION_TOTAL_FRAME__; i++) {
+	//flying animation
+	cocos2d::Vector<cocos2d::SpriteFrame *> flyingFrames;
+	for (int i = 0; i < __PLAYER_FLYING_ANIMATION_TOTAL_FRAME__; i++) {
 
 		auto file = cocos2d::String::createWithFormat("images/player/player%d.png", i);
 		auto frame = cocos2d::SpriteFrame::create(file->getCString(), cocos2d::Rect(0, 0, 170, 50));
-		frames.pushBack(frame);
+		flyingFrames.pushBack(frame);
 	}
+	cocos2d::Animation *animation = cocos2d::Animation::createWithSpriteFrames(flyingFrames, (float)__PLAYER_FLYING_ANIMATION_TOTAL_FRAME__ / 60.0F);
+	auto flyingAnimate = cocos2d::Animate::create(animation);
 
-	cocos2d::Animation *animation = cocos2d::Animation::createWithSpriteFrames(frames, 2.0F / 60.0F);
-	cocos2d::Animate *animate = cocos2d::Animate::create(animation);
-	
-	playerSprite->runAction(cocos2d::RepeatForever::create(animate));
+	//player start with flying animation
+	playerSprite->runAction(cocos2d::RepeatForever::create(flyingAnimate));
 }
 
 
@@ -207,6 +215,14 @@ void Player::updatePlayerPosition(float dt)
 			)
 		);
 	}
+}
+
+
+void Player::explodingHelicopter()
+{
+	playerSprite->stopAllActions();
+	playerSprite->setVisible(false);
+	Explosion *explosion = new Explosion(gameScene, getPlayerCurrentPosition());
 }
 
 
@@ -275,3 +291,41 @@ void PlayerBullet::initPlayerBullet()
 	bulletSprite->runAction(sequence);
 }
 
+/*======================================================================*/
+
+
+Explosion::Explosion(cocos2d::Layer * gameScene, cocos2d::Vec2 pos)
+{
+	this->gameScene = gameScene;
+	this->explodePos = pos;
+
+	initExplosion();
+}
+
+
+Explosion::~Explosion()
+{
+
+}
+
+
+void Explosion::initExplosion()
+{
+	auto explosion = cocos2d::ParticleExplosion::createWithTotalParticles(100);
+	explosion->setEmitterMode(cocos2d::ParticleSystem::Mode::RADIUS);
+	explosion->setPosition(explodePos);
+	explosion->setStartColor(cocos2d::Color4F(0xFF, 0, 0, 0xFF));
+	explosion->setEndColor(cocos2d::Color4F(0xFF, 0x55, 0, 0xFF));
+	explosion->setEndRadius(300);
+
+	explosion->runAction(
+		cocos2d::Sequence::create(
+			cocos2d::DelayTime::create(1.0F),
+			cocos2d::CallFunc::create(explosion, callfunc_selector(cocos2d::ParticleExplosion::removeFromParent)),
+			NULL
+		)
+	);
+
+	gameScene->addChild(explosion);
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/air_defense_missile_sound.mp3");
+}

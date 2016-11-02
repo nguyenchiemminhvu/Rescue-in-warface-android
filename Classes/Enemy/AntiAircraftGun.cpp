@@ -165,14 +165,14 @@ cocos2d::Vec2 AntiAircraftGun::getTargetPosition()
 	{
 	case 0:
 		return cocos2d::Vec2(
-			cocos2d::random(origin.x + (visibleSize.width / 5), origin.x + (visibleSize.width / 5) * 2),
+			cocos2d::random(origin.x + (visibleSize.width / 5), origin.x + (visibleSize.width / 5) * 2.5F),
 			origin.y + visibleSize.height
 		);
 		break;
 
 	case 1:
 		return cocos2d::Vec2(
-			cocos2d::random(origin.x + (visibleSize.width / 5) * 3, origin.x + (visibleSize.width / 5) * 4),
+			cocos2d::random(origin.x + (visibleSize.width / 5) * 2.5F, origin.x + (visibleSize.width / 5) * 4),
 			origin.y + visibleSize.height
 		);
 		break;
@@ -255,48 +255,3 @@ void AntiAircraftMissile::initMissile()
 	missileSprite->runAction(sequence);
 }
 
-
-/*======================================================================*/
-
-
-Explosion::Explosion(cocos2d::Layer * gameScene, cocos2d::Vec2 pos)
-{
-	this->gameScene = gameScene;
-	this->explodePos = pos;
-
-	initExplosion();
-}
-
-
-Explosion::~Explosion()
-{
-
-}
-
-
-void Explosion::initExplosion()
-{
-	auto explosion = cocos2d::ParticleExplosion::createWithTotalParticles(100);
-	explosion->setEmitterMode(cocos2d::ParticleSystem::Mode::RADIUS);
-	explosion->setPosition(explodePos);
-	explosion->setStartColor(cocos2d::Color4F(0xFF, 0, 0, 0xFF));
-	explosion->setEndColor(cocos2d::Color4F(0xFF, 0x55, 0, 0xFF));
-	explosion->setEndRadius(300);
-
-	auto explosionBody = cocos2d::PhysicsBody::createCircle(100);
-	explosionBody->setDynamic(false);
-	explosionBody->setContactTestBitmask(true);
-	explosionBody->setCollisionBitmask((int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK);
-	explosion->setPhysicsBody(explosionBody);
-	
-	explosion->runAction(
-		cocos2d::Sequence::create(
-			cocos2d::DelayTime::create(1.0F),
-			cocos2d::CallFunc::create(explosion, callfunc_selector(cocos2d::ParticleExplosion::removeFromParent)),
-			NULL
-		)
-	);
-	
-	gameScene->addChild(explosion);
-	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/air_defense_missile_sound.mp3");
-}

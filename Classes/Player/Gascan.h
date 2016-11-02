@@ -12,9 +12,9 @@ class Gascan : public cocos2d::Node
 {
 public:
 	
-	static Gascan* spawnGascan(cocos2d::Layer *gameScene);
+	static Gascan* spawnGascan(cocos2d::Layer *gameScene, float playerPosX);
 
-	Gascan(cocos2d::Layer *gameScene);
+	Gascan(cocos2d::Layer *gameScene, float playerPosX);
 	virtual ~Gascan();
 
 	cocos2d::PhysicsBody* getGascanPhysicsBody();
@@ -22,6 +22,7 @@ public:
 private:
 
 	cocos2d::Layer *gameScene;
+	float playerPosX;
 
 	cocos2d::Vec2 origin;
 	cocos2d::Size visibleSize;
