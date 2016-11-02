@@ -221,6 +221,7 @@ void Player::updatePlayerPosition(float dt)
 void Player::explodingHelicopter()
 {
 	playerSprite->stopAllActions();
+	playerSprite->getPhysicsBody()->removeFromWorld();
 	playerSprite->setVisible(false);
 	Explosion *explosion = new Explosion(gameScene, getPlayerCurrentPosition());
 }

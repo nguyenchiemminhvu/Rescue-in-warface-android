@@ -335,6 +335,7 @@ void GameScene::initMultiTouchEventListener()
 				buttonFire->setScale(1.1F);
 				player->createBullet(0);
 				this->schedule(schedule_selector(GameScene::playerShooting), __PLAYER_RELOAD_DURATION__);
+				continue;
 			}
 
 			//Check if user touch on joy stick
@@ -348,6 +349,7 @@ void GameScene::initMultiTouchEventListener()
 			{
 				isUsingJoyStick = true;
 				joyStickFirstTouchPosition = touch->getLocation();
+				continue;
 			}
 		}
 	};
