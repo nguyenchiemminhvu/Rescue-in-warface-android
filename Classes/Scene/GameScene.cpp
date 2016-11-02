@@ -559,6 +559,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		) 
 	{
 		_eventDispatcher->removeAllEventListeners();
+		this->unschedule(schedule_selector(GameScene::playerShooting));
 		player->explodingHelicopter();
 		this->runAction(
 			cocos2d::Sequence::create(
@@ -577,6 +578,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		)
 	{
 		_eventDispatcher->removeAllEventListeners();
+		this->unschedule(schedule_selector(GameScene::playerShooting));
 		player->explodingHelicopter();
 		this->runAction(
 			cocos2d::Sequence::create(
@@ -595,6 +597,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		)
 	{
 		_eventDispatcher->removeAllEventListeners();
+		this->unschedule(schedule_selector(GameScene::playerShooting));
 		player->explodingHelicopter();
 		this->runAction(
 			cocos2d::Sequence::create(
@@ -613,6 +616,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		)
 	{
 		_eventDispatcher->removeAllEventListeners();
+		this->unschedule(schedule_selector(GameScene::playerShooting));
 		player->explodingHelicopter();
 		this->runAction(
 			cocos2d::Sequence::create(
