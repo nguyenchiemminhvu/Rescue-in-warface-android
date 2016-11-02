@@ -22,6 +22,16 @@ bool GameOverScene::init()
 	visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
 	//////////////////////////////////////////////
+	// game over background
+	background = cocos2d::Sprite::create("images/backgrounds/game_over_background.png");
+	background->setPosition(
+		cocos2d::Vec2(
+			origin.x + visibleSize.width / 2,
+			origin.y + visibleSize.height / 2
+		)
+	);
+
+	//////////////////////////////////////////////
 	// load game over sprite
 	gameOverSprite = cocos2d::Sprite::create("images/UI/game_over.png");
 	gameOverSprite->setPosition(
@@ -55,6 +65,7 @@ bool GameOverScene::init()
 
 	//////////////////////////////////////////////
 	// add all components to game over layer
+	this->addChild(background);
 	this->addChild(gameOverSprite);
 	this->addChild(buttonMainMenu);
 	this->addChild(buttonPlayAgain);
