@@ -110,13 +110,33 @@ void GameOverScene::stopAllMusic()
 
 void GameOverScene::displayBestScore()
 {
+	cocos2d::String *text = cocos2d::String::createWithFormat("Best score: %d", cocos2d::UserDefault::getInstance()->getIntegerForKey("bestScore"));
+	cocos2d::ui::Text *bestScoreLabel = cocos2d::ui::Text::create(text->getCString(), "fonts/Schoolbook.ttf", 40);
+	bestScoreLabel->setTextColor(cocos2d::Color4B(190, 0, 0, 255));
+	bestScoreLabel->setPosition(
+		cocos2d::Vec2(
+			origin.x + visibleSize.width / 4,
+			origin.y + visibleSize.height / 2
+		)
+	);
 
+	this->addChild(bestScoreLabel);
 }
 
 
 void GameOverScene::displayCurrentScore()
 {
+	cocos2d::String *text = cocos2d::String::createWithFormat("Your score: %d", cocos2d::UserDefault::getInstance()->getIntegerForKey("score"));
+	cocos2d::ui::Text *scoreLabel = cocos2d::ui::Text::create(text->getCString(), "fonts/Schoolbook.ttf", 40);
+	scoreLabel->setTextColor(cocos2d::Color4B(190, 190, 0, 255));
+	scoreLabel->setPosition(
+		cocos2d::Vec2(
+			origin.x + (visibleSize.width / 4) * 3,
+			origin.y + visibleSize.height / 2
+		)
+	);
 
+	this->addChild(scoreLabel);
 }
 
 

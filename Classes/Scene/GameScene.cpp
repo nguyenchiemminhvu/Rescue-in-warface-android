@@ -537,6 +537,7 @@ void GameScene::resetBackgroundPosition()
 void GameScene::replaceFinishedScene()
 {
 	stopGameMusic();
+	player->saveScore();
 	auto finishedScene = FinishedScene::createScene();
 	cocos2d::Director::getInstance()->replaceScene(cocos2d::CCTransitionFade::create(TRANSITION_FADE_TIME * 2, finishedScene));
 }
@@ -545,6 +546,7 @@ void GameScene::replaceFinishedScene()
 void GameScene::replaceGameOverScene()
 {
 	stopGameMusic();
+	player->saveScore();
 	auto gameOverScene = GameOverScene::createScene();
 	cocos2d::Director::getInstance()->replaceScene(gameOverScene);
 }

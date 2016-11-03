@@ -30,6 +30,8 @@ public:
 	Player(cocos2d::Layer *gameScene);
 	virtual ~Player();
 
+	void saveScore();
+
 	cocos2d::PhysicsBody* getPlayerPhysicsBody();
 
 	void updatePlayerPosition(float dt);

@@ -29,6 +29,15 @@ Player::~Player()
 }
 
 
+void Player::saveScore()
+{
+	auto user = cocos2d::UserDefault::getInstance();
+	user->setIntegerForKey("score", getScore());
+	if(user->getIntegerForKey("bestScore") < getScore())
+		user->setIntegerForKey("bestScore", getScore());
+}
+
+
 cocos2d::PhysicsBody * Player::getPlayerPhysicsBody()
 {
 	return playerSprite->getPhysicsBody();
