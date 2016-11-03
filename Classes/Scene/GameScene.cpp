@@ -476,15 +476,25 @@ void GameScene::updatePlayerScore()
 /////////////////////////////////////////////
 // slots
 
+
+void GameScene::playBossBattleMusic()
+{
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/boss_battle_music.mp3", true);
+}
+
+
 void GameScene::stopGameMusic()
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopAllEffects();
 }
 
 
 void GameScene::resumeGameMusic()
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+	CocosDenshion::SimpleAudioEngine::getInstance()->resumeAllEffects();
 }
 
 
@@ -526,6 +536,7 @@ void GameScene::resetBackgroundPosition()
 
 void GameScene::replaceFinishedScene()
 {
+	stopGameMusic();
 	auto finishedScene = FinishedScene::createScene();
 	cocos2d::Director::getInstance()->replaceScene(cocos2d::CCTransitionFade::create(TRANSITION_FADE_TIME * 2, finishedScene));
 }
@@ -853,6 +864,7 @@ void GameScene::startMotherFuckerLoop(float t)
 
 void GameScene::invokeMiniBoss()
 {
+	playBossBattleMusic();
 	miniBoss->setStarted(true);
 	hud->warning();
 	this->scheduleOnce(schedule_selector(GameScene::activatedMiniBoss), MINI_BOSS_PREPARE_DURATION);

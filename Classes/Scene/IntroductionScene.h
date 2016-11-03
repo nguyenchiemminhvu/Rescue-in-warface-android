@@ -29,6 +29,8 @@ private:
 	void initButtonSkip();
 	void initActions();
 
+	void stopAllMusic();
+
 	////////////////////////////////////////////////
 	// actions
 	cocos2d::Sequence* helicopterComing();

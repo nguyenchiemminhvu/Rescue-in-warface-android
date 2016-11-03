@@ -30,14 +30,15 @@ bool InstructionScene::init()
 
 void InstructionScene::initBackgroundFrame()
 {
-	auto frame = cocos2d::Sprite::create("images/UI/setting_scene_frame.png");
-	frame->setPosition(
+	auto text = cocos2d::ui::Text::create("Instruction", "fonts/Schoolbook.ttf", 50);
+	text->setTextColor(cocos2d::Color4B(0, 0, 180, 255));
+	text->setPosition(
 		cocos2d::Vec2(
 			origin.x + visibleSize.width / 2,
-			origin.y + visibleSize.height / 2
+			origin.y + visibleSize.height - text->getContentSize().height
 		)
 	);
-	this->addChild(frame);
+	this->addChild(text);
 }
 
 
@@ -49,8 +50,8 @@ void InstructionScene::initDeclineInstruction()
 	checkBox->loadTextureBackGroundDisabled("images/UI/check_box_selected.png");
 	checkBox->setPosition(
 		cocos2d::Vec2(
-			origin.x + checkBox->getContentSize().width + 50,
-			origin.y + checkBox->getContentSize().height + 50
+			origin.x + checkBox->getContentSize().width,
+			origin.y + checkBox->getContentSize().height
 		)
 	);
 	checkBox->addEventListener(CC_CALLBACK_2(InstructionScene::onCheckBoxTouched, this));
@@ -73,8 +74,8 @@ void InstructionScene::initButtonSkip()
 	auto buttonSkip = cocos2d::ui::Button::create("images/buttons/button_skip.png", "images/button/button_skip.png");
 	buttonSkip->setPosition(
 		cocos2d::Vec2(
-			origin.x + visibleSize.width - buttonSkip->getContentSize().width / 2 - 50,
-			origin.y + buttonSkip->getContentSize().height / 2 + 50
+			origin.x + visibleSize.width - buttonSkip->getContentSize().width / 2,
+			origin.y + buttonSkip->getContentSize().height / 2
 		)
 	);
 	buttonSkip->addTouchEventListener(CC_CALLBACK_2(InstructionScene::onButtonSkipTouched, this));
@@ -89,12 +90,16 @@ void InstructionScene::onButtonSkipTouched(cocos2d::Ref * ref, cocos2d::ui::Widg
 	case cocos2d::ui::Widget::TouchEventType::BEGAN:
 		replaceGameScene();
 		break;
+
 	case cocos2d::ui::Widget::TouchEventType::MOVED:
 		break;
+
 	case cocos2d::ui::Widget::TouchEventType::ENDED:
 		break;
+
 	case cocos2d::ui::Widget::TouchEventType::CANCELED:
 		break;
+
 	default:
 		break;
 	}

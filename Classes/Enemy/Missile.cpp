@@ -43,9 +43,14 @@ void Missile::createMissile(float playerPosY)
 
 	missileSprite = cocos2d::Sprite::create("images/enemy/missile.png");
 	float randomPosY = cocos2d::random(playerPosY - 100, playerPosY + 100);
-	if (randomPosY < origin.y + PLATFORM_THICKNESS + TOWER_HEIGHT) {
-		randomPosY = origin.y + PLATFORM_THICKNESS + TOWER_HEIGHT;
-	}
+	
+	//prevent missile from flying lower Tower's height or higher screen height
+	randomPosY = cocos2d::clampf(
+		randomPosY, 
+		origin.y + PLATFORM_THICKNESS + TOWER_HEIGHT, 
+		origin.y + visibleSize.height
+	);
+
 	missileSprite->setPosition(
 		cocos2d::Vec2(
 			origin.x - missileSprite->getContentSize().width / 2,

@@ -42,7 +42,7 @@ void GameSettings::setEffectVolume(int percent)
 		return;
 
 	effectVolume = __MAX_VOLUMES__ * percent / 100.0F;
-	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(effectVolume);
+	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(effectVolume * 1.0F / 100);
 }
 
 

@@ -104,6 +104,7 @@ private:
 	///////////////////////////////////
 	// slots
 
+	void playBossBattleMusic();
 	void stopGameMusic();
 	void resumeGameMusic();
 

@@ -79,6 +79,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sounds/tank_sound.mp3");
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sounds/tower_sound.mp3");
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sounds/game_music.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sounds/dead_music.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sounds/finished_music.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sounds/boss_battle_music.mp3");
 
 	return true;
 }

@@ -151,6 +151,13 @@ void IntroductionScene::initActions()
 }
 
 
+void IntroductionScene::stopAllMusic()
+{
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopAllEffects();
+}
+
+
 cocos2d::Sequence * IntroductionScene::helicopterComing()
 {	
 	auto moveLeft = cocos2d::MoveBy::create(HELICOPTER_COMING_DURATION, cocos2d::Vec2(-visibleSize.width + helicopter->getContentSize().width, 0));
@@ -209,12 +216,16 @@ void IntroductionScene::onButtonSkipTouched(cocos2d::Ref * ref, cocos2d::ui::Wid
 	case cocos2d::ui::Widget::TouchEventType::BEGAN:
 		replaceInstructionScene(0);
 		break;
+
 	case cocos2d::ui::Widget::TouchEventType::MOVED:
 		break;
+
 	case cocos2d::ui::Widget::TouchEventType::ENDED:
 		break;
+
 	case cocos2d::ui::Widget::TouchEventType::CANCELED:
 		break;
+
 	default:
 		break;
 	}
@@ -223,7 +234,7 @@ void IntroductionScene::onButtonSkipTouched(cocos2d::Ref * ref, cocos2d::ui::Wid
 
 void IntroductionScene::replaceInstructionScene(float dt)
 {
-	CocosDenshion::SimpleAudioEngine::getInstance()->stopAllEffects();
+	stopAllMusic();
 
 	if (GameSettings::getInstance()->needToShowInstruction) {
 		auto instructionScene = InstructionScene::createScene();

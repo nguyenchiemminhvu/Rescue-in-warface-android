@@ -2,6 +2,7 @@
 #include "MainMenuScene.h"
 #include "GameScene.h"
 #include "Enumeration.h"
+#include "SimpleAudioEngine.h"
 
 
 cocos2d::Scene * GameOverScene::createScene()
@@ -21,6 +22,8 @@ bool GameOverScene::init()
 	origin = cocos2d::Director::getInstance()->getVisibleOrigin();
 	visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
+	playGameOverMusic();
+
 	//////////////////////////////////////////////
 	// game over background
 	background = cocos2d::Sprite::create("images/backgrounds/game_over_background.png");
@@ -33,11 +36,11 @@ bool GameOverScene::init()
 
 	//////////////////////////////////////////////
 	// load game over sprite
-	gameOverSprite = cocos2d::Sprite::create("images/UI/game_over.png");
+	gameOverSprite = cocos2d::Sprite::create("images/UI/mission_failed.png");
 	gameOverSprite->setPosition(
 		cocos2d::Vec2(
 			origin.x + visibleSize.width / 2,
-			origin.y + visibleSize.height / 2
+			origin.y + (visibleSize.height / 4) * 3
 		)
 	);
 
@@ -69,6 +72,8 @@ bool GameOverScene::init()
 	this->addChild(gameOverSprite);
 	this->addChild(buttonMainMenu);
 	this->addChild(buttonPlayAgain);
+	displayBestScore();
+	displayCurrentScore();
 
 	return true;
 }
@@ -76,6 +81,7 @@ bool GameOverScene::init()
 
 void GameOverScene::backToMainMenu()
 {
+	stopAllMusic();
 	auto menu = MainMenuScene::createScene();
 	cocos2d::Director::getInstance()->replaceScene(menu);
 }
@@ -83,8 +89,22 @@ void GameOverScene::backToMainMenu()
 
 void GameOverScene::playAgain()
 {
+	stopAllMusic();
 	auto gameScene = GameScene::createScene();
 	cocos2d::Director::getInstance()->replaceScene(cocos2d::TransitionFade::create(TRANSITION_FADE_TIME, gameScene));
+}
+
+
+void GameOverScene::playGameOverMusic()
+{
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/dead_music.mp3");
+}
+
+
+void GameOverScene::stopAllMusic()
+{
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopAllEffects();
 }
 
 

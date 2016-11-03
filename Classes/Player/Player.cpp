@@ -328,5 +328,5 @@ void Explosion::initExplosion()
 	);
 
 	gameScene->addChild(explosion);
-	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/air_defense_missile_sound.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/explosion.mp3");
 }

@@ -28,6 +28,9 @@ private:
 	cocos2d::ui::Button *buttonPlayAgain;
 	cocos2d::ui::Button *buttonMainMenu;
 
+	void playGameOverMusic();
+	void stopAllMusic();
+
 	//display player score
 	void displayBestScore();
 	void displayCurrentScore();

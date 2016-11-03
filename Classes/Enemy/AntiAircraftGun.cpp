@@ -172,7 +172,7 @@ cocos2d::Vec2 AntiAircraftGun::getTargetPosition()
 
 	case 1:
 		return cocos2d::Vec2(
-			cocos2d::random(origin.x + (visibleSize.width / 5) * 2.5F, origin.x + (visibleSize.width / 5) * 4),
+			cocos2d::random(origin.x + (visibleSize.width / 5) * 2.5F, origin.x + visibleSize.width),
 			origin.y + visibleSize.height
 		);
 		break;
