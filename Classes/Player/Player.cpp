@@ -158,7 +158,7 @@ void Player::initPlayerSprite()
 	playerBody->setDynamic(true);
 	playerBody->setRotationEnable(false);
 	playerBody->setContactTestBitmask(true);
-	playerBody->setCollisionBitmask((int)CollisionBitmask::PLAYER_COLLISTION_BITMASK);
+	playerBody->setCollisionBitmask((int)CollisionBitmask::PLAYER_COLLISION_BITMASK);
 	playerSprite->setPhysicsBody(playerBody);
 
 	gameScene->addChild(playerSprite);

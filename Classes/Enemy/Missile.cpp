@@ -36,6 +36,18 @@ Missile::~Missile()
 }
 
 
+cocos2d::Sprite * Missile::getMissileSprite()
+{
+	return missileSprite;
+}
+
+
+cocos2d::ParticleSun * Missile::getFire()
+{
+	return fire;
+}
+
+
 void Missile::createMissile(float playerPosY)
 {
 	/////////////////////////////////////////
@@ -69,7 +81,7 @@ void Missile::createMissile(float playerPosY)
 						);
 	missileBody->setDynamic(false);
 	missileBody->setContactTestBitmask(true);
-	missileBody->setCollisionBitmask((int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK);
+	missileBody->setCollisionBitmask((int)CollisionBitmask::ENEMY_BULLET_BISMASK);
 	missileSprite->setPhysicsBody(missileBody);
 
 	gameScene->addChild(missileSprite);

@@ -12,7 +12,14 @@
 #include "Enemy\AntiAircraftGun.h"
 #include "Enemy\Tower.h"
 
+#include <typeinfo>
+
 #define __SCORE_FOR_PASS_ONE_DISTANCE_UNIT__ 5
+
+AntiAircraftGun *currentGunOnScene = nullptr;
+Missile *currentMissileOnScene = nullptr;
+Tower *currentTowerOnScene = nullptr;
+
 
 cocos2d::Scene * GameScene::createScene()
 {
@@ -569,8 +576,8 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 	
 	//Player collided with obstacle
 	if (
-		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK && bitmaskB == (int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK) ||
-		(bitmaskA == (int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK)
+		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK) ||
+		(bitmaskA == (int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISION_BITMASK)
 		) 
 	{
 		_eventDispatcher->removeAllEventListeners();
@@ -588,12 +595,22 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 
 	//Player collided with enemy bullet
 	if (
-		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK && bitmaskB == (int)CollisionBitmask::ENEMY_BULLET_BISMASK) ||
-		(bitmaskA == (int)CollisionBitmask::ENEMY_BULLET_BISMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK)
+		bitmaskA == (int)CollisionBitmask::PLAYER_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::ENEMY_BULLET_BISMASK
 		)
 	{
 		_eventDispatcher->removeAllEventListeners();
 		this->unschedule(schedule_selector(GameScene::playerShooting));
+		
+		//remove enemy bullet from scene (node b)
+		//if enemy bullet is Missile object, also remove its fire
+		if (currentMissileOnScene->getMissileSprite() == nodeB) {
+			currentMissileOnScene->getFire()->removeFromParent();
+		}
+		shapeB->getBody()->getNode()->removeFromParentAndCleanup(false);
+		shapeB->getBody()->removeFromWorld();
+		nodeB->release();
+
+		//remove player from scene
 		player->explodingHelicopter();
 		this->runAction(
 			cocos2d::Sequence::create(
@@ -605,10 +622,40 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		return true;
 	}
 
+	//In other side, enemy bullet collided with player
+	if (
+		bitmaskA == (int)CollisionBitmask::ENEMY_BULLET_BISMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISION_BITMASK
+		)
+	{
+		_eventDispatcher->removeAllEventListeners();
+		this->unschedule(schedule_selector(GameScene::playerShooting));
+
+		//remove enemy bullet from scene (node a)
+		//if enemy bullet is Missile object, also remove its fire
+		if (currentMissileOnScene->getMissileSprite() == nodeA) {
+			currentMissileOnScene->getFire()->removeFromParent();
+		}
+		shapeA->getBody()->getNode()->removeFromParentAndCleanup(false);
+		shapeA->getBody()->removeFromWorld();
+		nodeA->release();
+
+		//remove player from game scene
+		player->explodingHelicopter();
+		this->runAction(
+			cocos2d::Sequence::create(
+				cocos2d::DelayTime::create(SCHEDULE_TRANSITION_TIME),
+				cocos2d::CallFunc::create(this, callfunc_selector(GameScene::replaceGameOverScene)),
+				NULL
+			)
+		);
+
+		return true;
+	}
+
 	//Player collided with enemy physics body
 	if (
-		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK && bitmaskB == (int)CollisionBitmask::ENEMY_COLLISION_BITMASK) ||
-		(bitmaskA == (int)CollisionBitmask::ENEMY_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK)
+		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::ENEMY_COLLISION_BITMASK) ||
+		(bitmaskA == (int)CollisionBitmask::ENEMY_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISION_BITMASK)
 		)
 	{
 		_eventDispatcher->removeAllEventListeners();
@@ -626,8 +673,8 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 
 	//Player collided with boss physics body
 	if (
-		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK && bitmaskB == (int)CollisionBitmask::BOSS_COLLISION_BITMASK) ||
-		(bitmaskA == (int)CollisionBitmask::BOSS_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK)
+		(bitmaskA == (int)CollisionBitmask::PLAYER_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::BOSS_COLLISION_BITMASK) ||
+		(bitmaskA == (int)CollisionBitmask::BOSS_COLLISION_BITMASK && bitmaskB == (int)CollisionBitmask::PLAYER_COLLISION_BITMASK)
 		)
 	{
 		_eventDispatcher->removeAllEventListeners();
@@ -645,7 +692,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 	
 	//Player collided with gascan
 	if (
-		bitmaskA == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK && 
+		bitmaskA == (int)CollisionBitmask::PLAYER_COLLISION_BITMASK && 
 		bitmaskB == (int)CollisionBitmask::GASCAN_COLLISION_BITMASK
 		)
 	{
@@ -658,7 +705,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 	//in opposite, gascan collided with player
 	if (
 		bitmaskA == (int)CollisionBitmask::GASCAN_COLLISION_BITMASK &&
-		bitmaskB == (int)CollisionBitmask::PLAYER_COLLISTION_BITMASK
+		bitmaskB == (int)CollisionBitmask::PLAYER_COLLISION_BITMASK
 		)
 	{
 		shapeA->getBody()->getNode()->removeFromParentAndCleanup(false);
@@ -666,7 +713,7 @@ bool GameScene::onContactBegin(cocos2d::PhysicsContact & contact)
 		nodeA->release();
 		return true;
 	}
-
+	
 	//Player's bullet collided with obstacle, then remove bullet from scene
 	if (
 		bitmaskA == (int)CollisionBitmask::PLAYER_BULLET_BITMASK &&
@@ -780,19 +827,19 @@ bool GameScene::onPlayerBulletContactWithMotherFucker(cocos2d::PhysicsContact & 
 
 void GameScene::spawnTank(float t)
 {
-	auto gun = AntiAircraftGun::spawnGun(this);
+	currentGunOnScene = AntiAircraftGun::spawnGun(this);
 }
 
 
 void GameScene::spawnMissile(float t)
 {
-	auto missile = Missile::spawnMissile(this, player->getPlayerCurrentPosition().y);
+	currentMissileOnScene = Missile::spawnMissile(this, player->getPlayerCurrentPosition().y);
 }
 
 
 void GameScene::spawnTower(float t)
 {
-	auto tower = Tower::spawnTower(this);
+	currentTowerOnScene = Tower::spawnTower(this);
 }
 
 

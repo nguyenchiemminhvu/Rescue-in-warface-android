@@ -239,7 +239,7 @@ void AntiAircraftMissile::initMissile()
 
 	missileBody->setDynamic(false);
 	missileBody->setContactTestBitmask(true);
-	missileBody->setCollisionBitmask((int)CollisionBitmask::OBSTACLE_COLLISION_BITMASK);
+	missileBody->setCollisionBitmask((int)CollisionBitmask::ENEMY_BULLET_BISMASK);
 	missileSprite->setPhysicsBody(missileBody);
 	missileSprite->setFlippedX((bool)missileType);
 

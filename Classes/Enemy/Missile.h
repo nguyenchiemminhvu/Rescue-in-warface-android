@@ -13,6 +13,9 @@ public:
 	Missile(cocos2d::Layer *gameScene, float playerPosY);
 	virtual ~Missile();
 
+	cocos2d::Sprite* getMissileSprite();
+	cocos2d::ParticleSun *getFire();
+
 private:
 
 	cocos2d::Vec2 origin;
