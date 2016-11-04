@@ -12,6 +12,7 @@
 #include "Enemy\AntiAircraftGun.h"
 #include "Enemy\Tower.h"
 
+#define __SCORE_FOR_PASS_ONE_DISTANCE_UNIT__ 5
 
 cocos2d::Scene * GameScene::createScene()
 {
@@ -445,6 +446,7 @@ void GameScene::updateRemainingDistance()
 		
 		if (remainingDistance > 0) {
 			
+			player->increaseScore(__SCORE_FOR_PASS_ONE_DISTANCE_UNIT__);
 			remainingDistance--;
 			hud->updateRemainingDistance(remainingDistance);
 		}

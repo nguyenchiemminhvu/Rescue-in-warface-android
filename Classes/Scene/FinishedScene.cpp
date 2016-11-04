@@ -120,6 +120,10 @@ void FinishedScene::displayCurrentScore()
 	);
 
 	this->addChild(scoreLabel);
+
+	if (cocos2d::UserDefault::getInstance()->getIntegerForKey("score") == cocos2d::UserDefault::getInstance()->getIntegerForKey("bestScore")) {
+		Toast::displayToast(this, "You have just set a new record", 2.0F);
+	}
 }
 
 
