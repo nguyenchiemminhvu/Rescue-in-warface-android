@@ -113,6 +113,8 @@ private:
 	void resumeGameMusic();
 	void turnOffGameEffects();
 	void turnOnGameEffects();
+	void turnOffGameMusic();
+	void turnOnGameMusic();
 
 	void resetPlatformPosition();
 	void resetBackgroundPosition();

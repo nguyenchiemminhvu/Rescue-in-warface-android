@@ -6,7 +6,6 @@
 #include "FinishedScene.h"
 #include "GameOverScene.h"
 #include "Toast.h"
-#include "CommonMath.h"
 
 #include "Enemy\Missile.h"
 #include "Enemy\AntiAircraftGun.h"
@@ -221,13 +220,16 @@ void GameScene::initAudioController()
 	audioOnOff->loadTextureFrontCross("images/buttons/background_music_off.png");
 	audioOnOff->setPosition(
 		cocos2d::Vec2(
-			origin.x + visibleSize.width / 2 - audioOnOff->getContentSize().width * 2, 
-			origin.y + visibleSize.height - audioOnOff->getContentSize().height / 2
+			origin.x + audioOnOff->getContentSize().width, 
+			origin.y + visibleSize.height - audioOnOff->getContentSize().height - 20
 		)
 	);
 	audioOnOff->addEventListener(CC_CALLBACK_2(GameScene::onAudioControllerTouched, this));
 
 	this->addChild(audioOnOff);
+
+	turnOnGameEffects();
+	turnOnGameMusic();
 }
 
 
@@ -518,13 +520,25 @@ void GameScene::resumeGameMusic()
 
 void GameScene::turnOffGameEffects()
 {
-	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.0F);
+	GameSettings::getInstance()->disableEffectSounds();
 }
 
 
 void GameScene::turnOnGameEffects()
 {
-	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.5F);
+	GameSettings::getInstance()->enableEffectSounds();
+}
+
+
+void GameScene::turnOffGameMusic()
+{
+	GameSettings::getInstance()->disableBackgroundMusic();
+}
+
+
+void GameScene::turnOnGameMusic()
+{
+	GameSettings::getInstance()->enableBackgroundMusic();
 }
 
 
@@ -980,8 +994,6 @@ void GameScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode key, cocos2d::Even
 
 void GameScene::onAudioControllerTouched(cocos2d::Ref * ref, cocos2d::ui::CheckBox::EventType type)
 {
-	cocos2d::ui::CheckBox *audioController = dynamic_cast<cocos2d::ui::CheckBox *>(ref);
-
 	switch (type)
 	{
 	case cocos2d::ui::CheckBox::EventType::SELECTED:

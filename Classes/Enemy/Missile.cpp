@@ -1,6 +1,7 @@
 #include "Missile.h"
 #include "Tower.h"
 #include "Enumeration.h"
+#include "GameSettings.h"
 #include "SimpleAudioEngine.h"
 
 #include "PhysicsBodyParser\PhysicsBodyParser.h"
@@ -25,7 +26,8 @@ Missile::Missile(cocos2d::Layer * gameScene, float playerPosY)
 	missileSprite->runAction(missileActions());
 	fire->runAction(particleActions());
 	
-	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/missile_sound.mp3");
+	if (GameSettings::getInstance()->willPlayEffectSounds)
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/missile_sound.mp3");
 }
 
 

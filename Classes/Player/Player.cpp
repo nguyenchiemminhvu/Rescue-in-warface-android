@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Enumeration.h"
 #include "SimpleAudioEngine.h"
+#include "GameSettings.h"
 #include "PhysicsBodyParser\PhysicsBodyParser.h"
 #include <string>
 #include <algorithm>
@@ -379,5 +380,7 @@ void Explosion::initExplosion()
 	);
 
 	gameScene->addChild(explosion);
-	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/explosion.mp3");
+	
+	if (GameSettings::getInstance()->willPlayEffectSounds)
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/explosion.mp3");
 }

@@ -27,6 +27,8 @@ public:
 	// Setting variables
 	float backgroundMusicVolume;
 	float effectVolume;
+	bool willPlayEffectSounds;
+	bool willPlayBackgroundMusic;
 	bool needToShowInstruction;
 
 	///////////////////////////////////////////////
@@ -41,6 +43,10 @@ public:
 
 	void doNotShowInstructionAgain();
 	void doNotDeclineInstruction();
+	void enableEffectSounds();
+	void disableEffectSounds();
+	void enableBackgroundMusic();
+	void disableBackgroundMusic();
 
 private:
 
@@ -48,6 +54,8 @@ private:
 		backgroundMusicVolume = 1.0f;
 		effectVolume = 1.0f;
 		needToShowInstruction = true;
+		willPlayEffectSounds = true;
+		willPlayBackgroundMusic = true;
 	}
 
 	GameSettings(const GameSettings &) = delete;

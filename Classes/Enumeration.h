@@ -55,7 +55,6 @@
 
 #define MINI_BOSS_PREPARE_DURATION 3.0F
 #define BIG_BOSS_PREPARE_DURATION 3.0F
-#define MINI_BOSS_MAX_HEALTH 50
 
 ////////////////////////////////////////
 // Collision bitmask

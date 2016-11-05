@@ -1,5 +1,6 @@
 #include "AntiAircraftGun.h"
 #include "Enumeration.h"
+#include "GameSettings.h"
 #include "PhysicsBodyParser\PhysicsBodyParser.h"
 #include "SimpleAudioEngine.h"
 #include "CommonMath.h"

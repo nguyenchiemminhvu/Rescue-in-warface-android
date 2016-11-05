@@ -1,5 +1,6 @@
 #include "Tower.h"
 #include "Enumeration.h"
+#include "GameSettings.h"
 #include "SimpleAudioEngine.h"
 #include "PhysicsBodyParser\PhysicsBodyParser.h"
 #include "CommonMath.h"
@@ -216,7 +217,8 @@ void Tower::attack()
 		bullet->runAction(bulletSequence);
 	}
 
-	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/tower_sound.mp3");
+	if (GameSettings::getInstance()->willPlayEffectSounds)
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("sounds/tower_sound.mp3");
 }
 
 

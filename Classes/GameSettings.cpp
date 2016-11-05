@@ -69,3 +69,27 @@ void GameSettings::doNotDeclineInstruction()
 {
 	needToShowInstruction = true;
 }
+
+
+void GameSettings::enableEffectSounds()
+{
+	willPlayEffectSounds = true;
+}
+
+
+void GameSettings::disableEffectSounds()
+{
+	willPlayEffectSounds = false;
+}
+
+
+void GameSettings::enableBackgroundMusic()
+{
+	willPlayBackgroundMusic = true;
+}
+
+
+void GameSettings::disableBackgroundMusic()
+{
+	willPlayBackgroundMusic = false;
+}
