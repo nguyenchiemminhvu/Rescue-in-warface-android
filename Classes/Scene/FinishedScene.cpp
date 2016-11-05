@@ -66,11 +66,23 @@ bool FinishedScene::init()
 	buttonShare->addTouchEventListener(CC_CALLBACK_2(FinishedScene::onButtonShareTouched, this));
 
 	/////////////////////////////////////////////////
+	// to be continue...
+	auto continueText = cocos2d::ui::Text::create("To be continue...", "fonts/Schoolbook.ttf", 30);
+	continueText->setPosition(
+		cocos2d::Vec2(
+			origin.x + visibleSize.width - continueText->getContentSize().width / 2,
+			origin.y + continueText->getContentSize().height / 2
+		)
+	);
+	continueText->setTextColor(cocos2d::Color4B::YELLOW);
+
+	/////////////////////////////////////////////////
 	// add all components to finished scene
 	this->addChild(background);
 	this->addChild(logo);
 	this->addChild(buttonMenu);
 	this->addChild(buttonShare);
+	this->addChild(continueText);
 	displayBestScore();
 	displayCurrentScore();
 

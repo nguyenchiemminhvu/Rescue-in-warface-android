@@ -57,6 +57,7 @@ bool GameScene::init()
 	initPlatformBody();
 	initWeather();
 	playGameMusic();
+	initAudioController();
 
 	initPlayer();
 	initHUD();
@@ -213,6 +214,23 @@ void GameScene::playGameMusic()
 }
 
 
+void GameScene::initAudioController()
+{
+	audioOnOff = cocos2d::ui::CheckBox::create();
+	audioOnOff->loadTextureBackGround("images/buttons/background_music_on.png");
+	audioOnOff->loadTextureFrontCross("images/buttons/background_music_off.png");
+	audioOnOff->setPosition(
+		cocos2d::Vec2(
+			origin.x + visibleSize.width / 2 - audioOnOff->getContentSize().width * 2, 
+			origin.y + visibleSize.height - audioOnOff->getContentSize().height / 2
+		)
+	);
+	audioOnOff->addEventListener(CC_CALLBACK_2(GameScene::onAudioControllerTouched, this));
+
+	this->addChild(audioOnOff);
+}
+
+
 void GameScene::initHUD()
 {
 	hud = HUD::createHUD();
@@ -280,17 +298,6 @@ void GameScene::initJoyStick()
 	joyStickOriginSprite->setCascadeOpacityEnabled(true);
 	joyStickOriginSprite->setOpacity(100);
 	this->addChild(joyStickOriginSprite, 900);
-
-	/////////////////////////////////////////
-	// Debug joy stick dragging
-	debugDraggedValue = cocos2d::LabelTTF::create("", "", 30);
-	debugDraggedValue->setPosition(
-		cocos2d::Vec2(
-			origin.x + visibleSize.width / 2,
-			origin.y + debugDraggedValue->getContentSize().height + 50
-		)
-	);
-	this->addChild(debugDraggedValue);
 }
 
 
@@ -379,9 +386,6 @@ void GameScene::initMultiTouchEventListener()
 				joyStickDragged.x = cocos2d::clampf(joyStickDragged.x, -100.0F, 100.0F);
 				joyStickDragged.y = cocos2d::clampf(joyStickDragged.y, -100.0F, 100.0F);
 				joyStick->setPosition(joyStickOrigin + joyStickDragged);
-
-				auto debugString = cocos2d::String::createWithFormat("(%.2f, %.2f)", joyStickDragged.x, joyStickDragged.y);
-				debugDraggedValue->setString(debugString->getCString());
 			}
 		}
 	};
@@ -493,17 +497,34 @@ void GameScene::playBossBattleMusic()
 }
 
 
+void GameScene::playMotherFuckerBattleMusic()
+{
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("sounds/mother_fucker_battle_music.mp3", true);
+}
+
+
 void GameScene::stopGameMusic()
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
-	CocosDenshion::SimpleAudioEngine::getInstance()->stopAllEffects();
 }
 
 
 void GameScene::resumeGameMusic()
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-	CocosDenshion::SimpleAudioEngine::getInstance()->resumeAllEffects();
+}
+
+
+void GameScene::turnOffGameEffects()
+{
+	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.0F);
+}
+
+
+void GameScene::turnOnGameEffects()
+{
+	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.5F);
 }
 
 
@@ -915,8 +936,8 @@ void GameScene::startMotherFuckerLoop(float t)
 
 void GameScene::invokeMiniBoss()
 {
-	playBossBattleMusic();
 	miniBoss->setStarted(true);
+	playBossBattleMusic();
 	hud->warning();
 	this->scheduleOnce(schedule_selector(GameScene::activatedMiniBoss), MINI_BOSS_PREPARE_DURATION);
 	this->scheduleOnce(schedule_selector(GameScene::startMiniBossLoop), MINI_BOSS_PREPARE_DURATION * 2 + 0.5F);
@@ -926,6 +947,7 @@ void GameScene::invokeMiniBoss()
 void GameScene::invokeMotherFucker()
 {
 	motherFucker->setStarted(true);
+	playMotherFuckerBattleMusic();
 	hud->warning();
 	this->scheduleOnce(schedule_selector(GameScene::activatedMotherFucker), BIG_BOSS_PREPARE_DURATION);
 	this->scheduleOnce(schedule_selector(GameScene::startMotherFuckerLoop), BIG_BOSS_PREPARE_DURATION * 2 + 0.5F);
@@ -953,6 +975,26 @@ void GameScene::onKeyPressed(cocos2d::EventKeyboard::KeyCode key, cocos2d::Event
 void GameScene::onKeyReleased(cocos2d::EventKeyboard::KeyCode key, cocos2d::Event * e)
 {
 
+}
+
+
+void GameScene::onAudioControllerTouched(cocos2d::Ref * ref, cocos2d::ui::CheckBox::EventType type)
+{
+	cocos2d::ui::CheckBox *audioController = dynamic_cast<cocos2d::ui::CheckBox *>(ref);
+
+	switch (type)
+	{
+	case cocos2d::ui::CheckBox::EventType::SELECTED:
+		turnOffGameEffects();
+		break;
+
+	case cocos2d::ui::CheckBox::EventType::UNSELECTED:
+		turnOnGameEffects();
+		break;
+
+	default:
+		break;
+	}
 }
 
 

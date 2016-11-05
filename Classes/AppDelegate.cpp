@@ -82,6 +82,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sounds/dead_music.mp3");
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sounds/finished_music.mp3");
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sounds/boss_battle_music.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sounds/mother_fucker_battle_music.mp3");
 
 	return true;
 }

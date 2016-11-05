@@ -50,7 +50,6 @@ private:
 	bool isUsingJoyStick;
 	cocos2d::Sprite *joyStick;
 	cocos2d::Sprite *joyStickOriginSprite;
-	cocos2d::LabelTTF *debugDraggedValue;
 
 	uint64_t countedFrames;
 	uint32_t remainingDistance;
@@ -59,6 +58,9 @@ private:
 
 	MiniBoss *miniBoss;
 	MotherFucker *motherFucker;
+
+	//game scene setting
+	cocos2d::ui::CheckBox *audioOnOff;
 
 	cocos2d::EventListenerPhysicsContact *contactListener;
 	cocos2d::EventListenerKeyboard *keyboardListener;
@@ -76,6 +78,7 @@ private:
 	void initBackground();
 	void initWeather();
 	void playGameMusic();
+	void initAudioController();
 
 	void initHUD();
 	void initPlayer();
@@ -105,8 +108,11 @@ private:
 	// slots
 
 	void playBossBattleMusic();
+	void playMotherFuckerBattleMusic();
 	void stopGameMusic();
 	void resumeGameMusic();
+	void turnOffGameEffects();
+	void turnOnGameEffects();
 
 	void resetPlatformPosition();
 	void resetBackgroundPosition();
@@ -149,6 +155,7 @@ private:
 
 	void onKeyPressed(cocos2d::EventKeyboard::KeyCode key, cocos2d::Event *e);
 	void onKeyReleased(cocos2d::EventKeyboard::KeyCode key, cocos2d::Event *e);
+	void onAudioControllerTouched(cocos2d::Ref *ref, cocos2d::ui::CheckBox::EventType type);
 };
 
 #endif //__GAME_SCENE_H__

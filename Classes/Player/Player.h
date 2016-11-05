@@ -11,6 +11,9 @@
 #define __HELICOPTER_FLYING_SPEED__ 100.0F
 #define __JOY_STICK_ORIGIN_HALF_LENGTH__ 10.0F
 #define __HELICOPTER_MAX_FUEL__ 20
+#define __HELICOPTER_NOT_ROTATION_DEGREE__ 0.0F
+#define __HELICOPTER_LEFT_ROTATION_CLAMP__ -10.0F
+#define __HELICOPTER_RIGHT_ROTATION_CLAMP__ 10.0F
 
 class PlayerBullet;
 class Explosion;
@@ -36,6 +39,10 @@ public:
 
 	void updatePlayerPosition(float dt);
 	void explodingHelicopter();
+
+	void balancingPlayerRotation();
+	void rotatingToTheLeft();
+	void rotatingToTheRight();
 
 	void resetPlayerMovementDirection();
 	void setPlayerMovementDirection(cocos2d::Vec2 vec);
@@ -64,6 +71,7 @@ private:
 	//Player properties
 	int fuel;
 	bool isUnderControl;
+	int rotationDegree;
 	int movementDirection;
 	unsigned long long score;
 
@@ -84,9 +92,9 @@ private:
 class PlayerBullet : public cocos2d::Node {
 public:
 
-	static PlayerBullet* createBullet(cocos2d::Layer *gameScene, cocos2d::Vec2 pos);
+	static PlayerBullet* createBullet(cocos2d::Layer *gameScene, cocos2d::Vec2 pos, float rotation);
 
-	PlayerBullet(cocos2d::Layer *gameScene, cocos2d::Vec2 pos);
+	PlayerBullet(cocos2d::Layer *gameScene, cocos2d::Vec2 pos, float rotation);
 	virtual ~PlayerBullet();
 
 	cocos2d::Sprite *getBulletSprite();
@@ -100,6 +108,7 @@ private:
 
 	cocos2d::Sprite *bulletSprite;
 	cocos2d::Vec2 startPos;
+	float radian;
 
 	void initPlayerBullet();
 };

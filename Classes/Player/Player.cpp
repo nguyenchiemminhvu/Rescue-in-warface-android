@@ -3,6 +3,7 @@
 #include "SimpleAudioEngine.h"
 #include "PhysicsBodyParser\PhysicsBodyParser.h"
 #include <string>
+#include <algorithm>
 
 
 Player::Player(cocos2d::Layer *gameScene)
@@ -12,13 +13,14 @@ Player::Player(cocos2d::Layer *gameScene)
 	origin = cocos2d::Director::getInstance()->getVisibleOrigin();
 	visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
 
-	this->initPlayerSprite();
-	this->initPlayerAnimation();
-
+	rotationDegree = 0;
 	movementDirection = 0;
 	fuel = PLAYER_MAX_FUEL;
 	score = 0;
 	isUnderControl = true;
+
+	this->initPlayerSprite();
+	this->initPlayerAnimation();
 
 	this->scheduleUpdate();
 }
@@ -50,25 +52,61 @@ void Player::resetPlayerMovementDirection()
 }
 
 
+void Player::balancingPlayerRotation()
+{
+	if (rotationDegree < 0)
+		rotationDegree++;
+	if (rotationDegree > 0)
+		rotationDegree--;
+}
+
+
+void Player::rotatingToTheLeft()
+{
+	rotationDegree = cocos2d::clampf(
+		rotationDegree - 1,
+		__HELICOPTER_LEFT_ROTATION_CLAMP__,
+		__HELICOPTER_NOT_ROTATION_DEGREE__
+	);
+}
+
+
+void Player::rotatingToTheRight()
+{
+	rotationDegree = cocos2d::clampf(
+		rotationDegree + 1,
+		__HELICOPTER_NOT_ROTATION_DEGREE__,
+		__HELICOPTER_RIGHT_ROTATION_CLAMP__
+	);
+}
+
+
 void Player::setPlayerMovementDirection(cocos2d::Vec2 vec)
 {
 	resetPlayerMovementDirection();
 
 	if (vec.x <= -(__JOY_STICK_ORIGIN_HALF_LENGTH__)) {
 		movementDirection |= MovementDirection::LEFT;
+		rotatingToTheLeft();
 	}
 	
 	if (vec.x >= __JOY_STICK_ORIGIN_HALF_LENGTH__) {
 		movementDirection |= MovementDirection::RIGHT;
+		rotatingToTheRight();
 	}
 
 	if (vec.y >= __JOY_STICK_ORIGIN_HALF_LENGTH__) {
 		movementDirection |= MovementDirection::UP;
+		balancingPlayerRotation();
 	}
 
 	if (vec.y <= -(__JOY_STICK_ORIGIN_HALF_LENGTH__)) {
 		movementDirection |= MovementDirection::DOWN;
+		balancingPlayerRotation();
 	}
+
+	if (movementDirection == 0)
+		balancingPlayerRotation();
 }
 
 
@@ -145,6 +183,7 @@ void Player::initPlayerSprite()
 			origin.y + visibleSize.height / 2
 		)
 	);
+	playerSprite->setRotation(rotationDegree);
 
 	/////////////////////////////////////////
 	// add player physics body
@@ -185,6 +224,8 @@ void Player::initPlayerAnimation()
 
 void Player::updatePlayerPosition(float dt)
 {
+	playerSprite->setRotation(rotationDegree);
+
 	if (movementDirection & MovementDirection::LEFT) {
 		playerSprite->setPositionX(
 			cocos2d::clampf(
@@ -238,21 +279,22 @@ void Player::explodingHelicopter()
 
 PlayerBullet* Player::createBullet(float t)
 {
-	return PlayerBullet::createBullet(gameScene, getPlayerGunPosition());
+	return PlayerBullet::createBullet(gameScene, getPlayerGunPosition(), rotationDegree);
 }
 
 /*============================================================*/
 
-PlayerBullet * PlayerBullet::createBullet(cocos2d::Layer * gameScene, cocos2d::Vec2 pos)
+PlayerBullet * PlayerBullet::createBullet(cocos2d::Layer * gameScene, cocos2d::Vec2 pos, float rotation)
 {
-	return new PlayerBullet(gameScene, pos);
+	return new PlayerBullet(gameScene, pos, rotation);
 }
 
 
-PlayerBullet::PlayerBullet(cocos2d::Layer * gameScene, cocos2d::Vec2 pos)
+PlayerBullet::PlayerBullet(cocos2d::Layer * gameScene, cocos2d::Vec2 pos, float rotation)
 {
 	this->gameScene = gameScene;
-	startPos = pos;
+	this->startPos = pos;
+	this->radian = -(rotation * 3.1416F / 180.0F);
 
 	origin = cocos2d::Director::getInstance()->getVisibleOrigin();
 	visibleSize = cocos2d::Director::getInstance()->getVisibleSize();
@@ -292,11 +334,11 @@ void PlayerBullet::initPlayerBullet()
 	////////////////////////////////////////////
 	// setup bullet action
 	auto sequence = cocos2d::Sequence::create(
-		cocos2d::MoveBy::create(1.0F, cocos2d::Vec2(__PLAYER_BULLET_VELOCITY__, 0)),
+		cocos2d::MoveBy::create(1.0F, cocos2d::Vec2(__PLAYER_BULLET_VELOCITY__, __PLAYER_BULLET_VELOCITY__ * tan(radian))),
 		cocos2d::CallFunc::create(bulletSprite, callfunc_selector(cocos2d::Sprite::removeFromParent)),
 		NULL
 	);
-
+	
 	gameScene->addChild(bulletSprite);
 	bulletSprite->runAction(sequence);
 }
