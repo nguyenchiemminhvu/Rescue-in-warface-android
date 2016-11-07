@@ -37,6 +37,7 @@ static int register_all_packages()
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
+	
 	// initialize director
 	auto director = Director::getInstance();
 	auto glview = director->getOpenGLView();

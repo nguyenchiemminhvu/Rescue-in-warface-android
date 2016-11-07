@@ -4,6 +4,7 @@
 #include "SimpleAudioEngine.h"
 #include "Toast.h"
 
+
 cocos2d::Scene * FinishedScene::createScene()
 {
 	auto scene = cocos2d::Scene::create();
@@ -149,7 +150,7 @@ void FinishedScene::backToMainMenu()
 
 void FinishedScene::shareFacebook()
 {
-	Toast::displayToast(this, "This function is under construction", 2.0F);
+
 }
 
 

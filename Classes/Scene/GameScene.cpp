@@ -2,7 +2,6 @@
 #include "GameSettings.h"
 #include "Enumeration.h"
 #include "SimpleAudioEngine.h"
-#include "PauseScene.h"
 #include "FinishedScene.h"
 #include "GameOverScene.h"
 #include "Toast.h"
