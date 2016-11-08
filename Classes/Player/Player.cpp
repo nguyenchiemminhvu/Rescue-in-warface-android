@@ -149,6 +149,7 @@ unsigned long long Player::getScore()
 void Player::lostControl()
 {
 	isUnderControl = false;
+	playerSprite->getPhysicsBody()->setGravityEnable(true);
 }
 
 
