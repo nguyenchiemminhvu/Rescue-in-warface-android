@@ -4,6 +4,10 @@
 #include "SimpleAudioEngine.h"
 #include "Toast.h"
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "pluginfacebook\PluginFacebook.h"
+#endif
+
 
 cocos2d::Scene * FinishedScene::createScene()
 {
@@ -150,7 +154,21 @@ void FinishedScene::backToMainMenu()
 
 void FinishedScene::shareFacebook()
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	if (!sdkbox::PluginFacebook::isLoggedIn()) {
+		sdkbox::PluginFacebook::login();
+	}
+
+	sdkbox::FBShareInfo info;
+	info.type = sdkbox::FB_LINK;
+	info.link = "http://www.cocos2d-x.org";
+	info.title = "cocos2d-x";
+	info.text = "Best Game Engine";
+	info.image = "";
+	sdkbox::PluginFacebook::share(info);
+#endif
 }
 
 

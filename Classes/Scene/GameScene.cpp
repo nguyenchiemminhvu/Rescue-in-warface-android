@@ -227,8 +227,7 @@ void GameScene::initAudioController()
 
 	this->addChild(audioOnOff);
 
-	turnOnGameEffects();
-	turnOnGameMusic();
+	audioOnOff->setSelected(!GameSettings::getInstance()->willPlayEffectSounds);
 }
 
 

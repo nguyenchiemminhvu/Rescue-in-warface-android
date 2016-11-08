@@ -3,6 +3,10 @@
 #include "SimpleAudioEngine.h"
 #include "GameSettings.h"
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+#include "pluginfacebook\PluginFacebook.h"
+#endif
+
 USING_NS_CC;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
@@ -37,6 +41,11 @@ static int register_all_packages()
 }
 
 bool AppDelegate::applicationDidFinishLaunching() {
+
+	//initialize plugin facebook
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	sdkbox::PluginFacebook::init();
+#endif
 	
 	// initialize director
 	auto director = Director::getInstance();
